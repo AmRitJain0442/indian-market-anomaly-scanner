@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>INR 10,000 Pilot Plan · NSE Anomaly Atlas</title>
+  <link rel="stylesheet" href="investment-plan.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a href="index.html">← Stock atlas</a>
+    <nav><a href="combination-ranking.html">Stock × strategy</a><a href="strategy-ranking.html">Strategy ranking</a><a class="active" href="investment-plan.html">INR 10k plan</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Capital protocol / research to execution</p>
+        <h1><span>INR 10,000</span><br>controlled<br><em>pilot.</em></h1>
+      </div>
+      <aside>
+        <p class="signal">BEST DEFENSIBLE PLAN</p>
+        <p>Prove the fill mechanics first. Deploy half-size second. Earn the right to use the full pilot only after costs, slippage, and drawdown pass fixed gates.</p>
+        <small>IN-SAMPLE FINDINGS THROUGH <b id="evaluationEnd">—</b> · NOT A RETURN FORECAST</small>
+        <a class="log-download" href="pilot_trade_log_template.csv" download>Download paper-trade log →</a>
+      </aside>
+    </section>
+
+    <section class="capital-grid">
+      <article><span>01 / CAPITAL</span><strong id="capital">—</strong><p>Total pilot account</p></article>
+      <article><span>02 / EXPOSURE</span><strong id="maxPosition">—</strong><p>Maximum one-position notional</p></article>
+      <article><span>03 / TRADE RISK</span><strong id="tradeRisk">—</strong><p>Planned loss at the stop</p></article>
+      <article><span>04 / KILL SWITCH</span><strong id="drawdownLimit">—</strong><p>Cumulative drawdown: pause</p></article>
+    </section>
+
+    <section class="section stages">
+      <header><p class="eyebrow">Three gates, no shortcuts</p><h2>How we’re going to do it</h2></header>
+      <div class="stage-track">
+        <article><b>01</b><div><span>PAPER</span><h3>20 sessions + 10 signals</h3><p>No capital at risk. Extend until both are satisfied. Pass only with positive net PnL, ≤10 bps average slippage, and drawdown below INR 300.</p></div></article>
+        <article><b>02</b><div><span>HALF SIZE</span><h3>10 valid trades</h3><p>Maximum INR 2,500 position and INR 25 risk. Pass only with positive net PnL and ≤10 bps average slippage.</p></div></article>
+        <article><b>03</b><div><span>FULL PILOT</span><h3>INR 5,000 max</h3><p>One trade at a time. Stop for the day at −INR 100. Pause the entire pilot at −INR 500.</p></div></article>
+      </div>
+    </section>
+
+    <section class="section playbook">
+      <header><p class="eyebrow">Primary setup / 1% gap fade</p><h2>The daily rule card</h2></header>
+      <div class="rule-grid">
+        <article><b>1</b><h3>Measure</h3><p>At the open: <code>gap = open / prior close − 1</code>.</p></article>
+        <article class="long"><b>2A</b><h3>Gap ≤ −1%</h3><p>Buy at the open. This is the long fade leg.</p></article>
+        <article class="short"><b>2B</b><h3>Gap ≥ +1%</h3><p>Sell short intraday only. Confirm availability and square off the same day.</p></article>
+        <article><b>3</b><h3>Prioritize</h3><p>If several names trigger, take only the highest-ranked watchlist candidate.</p></article>
+        <article><b>4</b><h3>Protect</h3><p>Use the 1% stop overlay. No averaging down and no second position.</p></article>
+        <article><b>5</b><h3>Exit</h3><p>Close by 15:15 IST. Skip if fill is over 10 bps from open or spread exceeds 0.50%.</p></article>
+      </div>
+      <p class="warning">The stop, fill tolerance, stricter liquidity screen, and 15:15 exit are safety overlays that were not separately backtested. The paper gate tests this implementation gap.</p>
+    </section>
+
+    <section class="section">
+      <header><p class="eyebrow">Strict execution shortlist</p><h2>Five names to watch—not buy and hold</h2></header>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Priority</th><th>Stock</th><th>Pair score</th><th>Pair rank</th><th>Scaled historical PnL</th><th>Historical ending</th><th>30 bps PnL</th><th>Long leg</th><th>Short leg</th><th>Atlas</th></tr></thead>
+          <tbody id="watchlist"></tbody>
+        </table>
+      </div>
+      <p class="caption">Historical figures scale the INR 100,000 research curve to INR 10,000. They are not expected returns and do not include the new safety overlay.</p>
+    </section>
+
+    <section class="section calculator">
+      <div>
+        <p class="eyebrow">Position calculator</p>
+        <h2>Know the quantity<br>before the bell.</h2>
+        <p>Position size is the smaller of the notional cap and the amount that keeps a 1% stop within the risk cap.</p>
+      </div>
+      <form onsubmit="return false">
+        <label>Entry price<input id="entryPrice" type="number" min="0.01" step="0.05" value="200"></label>
+        <label>Live stage<select id="liveStage"><option value="half">Half-size validation</option><option value="full">Full pilot</option></select></label>
+        <dl>
+          <div><dt>Quantity</dt><dd id="quantity">—</dd></div>
+          <div><dt>Notional</dt><dd id="notional">—</dd></div>
+          <div><dt>Planned risk</dt><dd id="plannedRisk">—</dd></div>
+          <div><dt>Cash remaining</dt><dd id="cashRemaining">—</dd></div>
+        </dl>
+      </form>
+    </section>
+
+    <section class="section stop-list">
+      <header><p class="eyebrow">Automatic no-trade conditions</p><h2>When we do nothing</h2></header>
+      <div><span>01</span><p>Paper gate has not passed, or rules were changed mid-test.</p></div>
+      <div><span>02</span><p>Missing prior close/open data, surveillance restriction, circuit condition, or broker rejection.</p></div>
+      <div><span>03</span><p>Three consecutive losses, INR 100 lost today, or INR 500 cumulative pilot drawdown.</p></div>
+      <div><span>04</span><p>The INR 10,000 is needed for essentials, emergency reserves, debt payments, or near-term obligations.</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Research-derived pilot protocol—not personalized investment advice or an assurance of returns.</p>
+    <p><a href="https://www.sebi.gov.in/media-and-notifications/press-releases/jul-2024/sebi-study-finds-that-7-out-of-10-individual-intraday-traders-in-equity-cash-segment-make-losses_84948.html">SEBI intraday study ↗</a> · <a href="https://www.sebi.gov.in/legal/circulars/jan-2024/framework-for-short-selling_80448.html">SEBI short-selling framework ↗</a></p>
+  </footer>
+  <script src="investment-plan-data.js"></script>
+  <script src="investment-plan-app.js"></script>
+</body>
+</html>

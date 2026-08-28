@@ -49,6 +49,14 @@ python generate_combination_ranking.py
 
 This creates a searchable leaderboard for all 34,476 combinations. Every row shows the INR 100,000 initial investment, realised profit, ending value, composite score, pure-profit rank, cost sensitivity, risk, evidence tier, and sample-quality label. It also publishes a separate comparable rank for liquid securities with at least 95% history and 20 trades.
 
+Generate the rules-based INR 10,000 pilot plan with:
+
+```bash
+python generate_investment_plan.py
+```
+
+The plan uses a strict, direction-checked 1% gap-fade watchlist and a three-stage paper → half-size → full-pilot gate. It caps one-position exposure at INR 5,000, planned risk at INR 50 per trade, daily loss at INR 100, and cumulative pilot drawdown at INR 500. These execution controls are deliberately stricter than the historical scanner and must be paper-validated before capital is used.
+
 The command writes normalized Parquet data under `data/processed/` and complete research artifacts under `results/`. Raw and processed market files are intentionally ignored by Git; curated, dated findings live in `results/findings/`.
 
 ## Scope and caveats
