@@ -1,6 +1,7 @@
 import pandas as pd
 
 from src.planning.investment_plan import build_investment_plan, position_size
+from src.planning.thirty_day_plan import build_thirty_day_calendar
 
 
 def test_position_size_respects_notional_and_risk_caps():
@@ -13,6 +14,7 @@ def test_position_size_respects_notional_and_risk_caps():
     }
     assert position_size(200, "half")["quantity"] == 12
     assert position_size(6_000)["quantity"] == 0
+    assert position_size(200, "full", account_equity=11_000)["quantity"] == 27
 
 
 def test_plan_requires_both_directions_and_strict_quality():
@@ -53,3 +55,14 @@ def test_plan_requires_both_directions_and_strict_quality():
     plan = build_investment_plan(ranked, trades, 100_000)
     assert plan["symbol"].tolist() == ["GOOD"]
     assert plan.iloc[0]["historical_pnl_10k"] == 2_000
+
+
+def test_thirty_day_calendar_excludes_nse_holidays_and_compounds_conditionally():
+    calendar = build_thirty_day_calendar()
+    assert len(calendar) == 30
+    assert calendar[0]["date"] == "2026-08-31"
+    assert calendar[-1]["date"] == "2026-10-13"
+    assert "2026-09-14" not in {day["date"] for day in calendar}
+    assert "2026-10-02" not in {day["date"] for day in calendar}
+    assert calendar[19]["phase"] == "PAPER"
+    assert calendar[20]["phase"] == "HALF-SIZE IF GATE PASSED"

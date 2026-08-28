@@ -13,6 +13,10 @@ DAILY_LOSS_LIMIT = 100.0
 PILOT_DRAWDOWN_LIMIT = 500.0
 STOP_DISTANCE = 0.01
 WATCHLIST_SIZE = 5
+MAX_POSITION_RATIO = MAX_POSITION / PLAN_CAPITAL
+RISK_PER_TRADE_RATIO = RISK_PER_TRADE / PLAN_CAPITAL
+DAILY_LOSS_RATIO = DAILY_LOSS_LIMIT / PLAN_CAPITAL
+PILOT_DRAWDOWN_RATIO = PILOT_DRAWDOWN_LIMIT / PLAN_CAPITAL
 
 ELIGIBILITY_RULES = {
     "coverage_ratio": 0.99,
@@ -22,20 +26,26 @@ ELIGIBILITY_RULES = {
 }
 
 
-def position_size(entry_price: float, live_stage: str = "full") -> dict[str, float | int]:
+def position_size(
+    entry_price: float,
+    live_stage: str = "full",
+    account_equity: float = PLAN_CAPITAL,
+) -> dict[str, float | int]:
     """Size a trade so a 1% stop risks at most 0.5% of plan capital."""
     if entry_price <= 0:
         raise ValueError("Entry price must be positive")
+    if account_equity <= 0:
+        raise ValueError("Account equity must be positive")
     multiplier = 0.5 if live_stage == "half" else 1.0
-    notional_cap = MAX_POSITION * multiplier
-    risk_cap = RISK_PER_TRADE * multiplier
+    notional_cap = account_equity * MAX_POSITION_RATIO * multiplier
+    risk_cap = account_equity * RISK_PER_TRADE_RATIO * multiplier
     quantity = int(min(notional_cap / entry_price, risk_cap / (entry_price * STOP_DISTANCE)))
     notional = quantity * entry_price
     return {
         "quantity": quantity,
         "notional": round(notional, 2),
         "planned_risk": round(notional * STOP_DISTANCE, 2),
-        "cash_remaining": round(PLAN_CAPITAL - notional, 2),
+        "cash_remaining": round(account_equity - notional, 2),
     }
 
 
