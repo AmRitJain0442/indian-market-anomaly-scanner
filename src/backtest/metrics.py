@@ -28,8 +28,9 @@ def calculate_metrics(
     downside = float(net[net < 0].std(ddof=1))
     positive_sum = float(trades[trades > 0].sum())
     negative_sum = float(trades[trades < 0].sum())
-    standard_error = float(trades.std(ddof=1) / math.sqrt(len(trades))) if len(trades) > 1 else np.nan
-    if len(trades) > 1 and trades.std(ddof=1) > 0:
+    trade_std = float(trades.std(ddof=1)) if len(trades) > 1 else np.nan
+    standard_error = trade_std / math.sqrt(len(trades)) if len(trades) > 1 else np.nan
+    if len(trades) > 1 and trade_std > 1e-12:
         t_stat, p_value = stats.ttest_1samp(trades, popmean=0.0, nan_policy="omit")
         confidence = stats.t.interval(
             0.95,
@@ -67,7 +68,7 @@ def calculate_metrics(
         "worst_trade": float(trades.min()) if len(trades) else np.nan,
         "exposure_pct": float(active_mask.mean()),
         "turnover": float(active_mask.sum() * 2.0),
-        "trade_std": float(trades.std(ddof=1)) if len(trades) > 1 else np.nan,
+        "trade_std": trade_std,
         "standard_error": standard_error,
         "t_stat": float(t_stat),
         "p_value": float(p_value),
@@ -86,4 +87,3 @@ def calculate_metrics(
         sensitivity = gross - active_mask.astype(float) * (2.0 * bps / 10_000.0)
         result[label] = _compound(sensitivity, initial_capital) - initial_capital
     return result
-

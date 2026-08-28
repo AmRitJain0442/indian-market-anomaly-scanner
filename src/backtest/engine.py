@@ -63,8 +63,8 @@ class BacktestEngine:
         curve["signal"] = curve["signal"].fillna(0.0)
         curve["gross_return"] = curve["gross_return"].fillna(0.0)
         curve["buy_hold_return"] = curve["buy_hold_return"].fillna(0.0)
-        curve["corporate_action_flag"] = curve["corporate_action_flag"].fillna(False)
-        curve["circuit_like_flag"] = curve["circuit_like_flag"].fillna(False)
+        curve["corporate_action_flag"] = curve["corporate_action_flag"].eq(True)
+        curve["circuit_like_flag"] = curve["circuit_like_flag"].eq(True)
         curve["active"] = curve["signal"].ne(0.0)
         curve["net_return"] = apply_round_trip_cost(
             curve["gross_return"], curve["active"], self.config.one_way_cost_bps
