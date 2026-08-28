@@ -22,6 +22,26 @@ Evaluation window: **2025-08-20 to 2026-08-27** (252 completed NSE sessions); **
 | gap_continuation_050 | 2652 | 6.7% | INR -49,036 | INR -72,393 | -2.652 |
 | open_to_close | 2652 | 4.2% | INR -62,108 | INR -71,278 | -2.515 |
 
+## Collective strategy ranking
+
+The collective score equally weights relative ranks for median stock PnL, profitable-stock breadth, equal-weight universe PnL, median Sharpe, and profitable breadth at 30 bps per side. The score is relative; the evidence tier separately counts absolute positive pillars.
+
+| collective_rank | strategy | collective_score | evidence_tier | positive_pillars | median_net_pnl | pct_profitable | equal_weight_pnl |
+|---|---|---|---|---|---|---|---|
+| 1 | gap_fade_100 | 96.7 | ROBUST POSITIVE | 5 | INR 21,152 | 71.9% | INR 107,657 |
+| 2 | gap_fade_050 | 95.0 | BROAD POSITIVE | 4 | INR 25,035 | 69.0% | INR 114,691 |
+| 3 | close_to_open | 81.7 | BROAD POSITIVE | 4 | INR 6,040 | 57.2% | INR 33,608 |
+| 4 | volume_reversal | 76.7 | WEAK / NEGATIVE | 0 | INR 0 | 42.3% | INR -397 |
+| 5 | reversal_5d | 61.7 | WEAK / NEGATIVE | 0 | INR -7,467 | 31.0% | INR -10,545 |
+| 6 | volume_continuation | 60.0 | WEAK / NEGATIVE | 0 | INR -4,225 | 28.1% | INR -6,259 |
+| 7 | reversal_1d | 53.3 | WEAK / NEGATIVE | 0 | INR -10,503 | 30.3% | INR -11,935 |
+| 8 | momentum_1d | 38.3 | WEAK / NEGATIVE | 0 | INR -16,088 | 20.6% | INR -19,197 |
+| 9 | momentum_5d | 36.7 | WEAK / NEGATIVE | 0 | INR -14,470 | 17.8% | INR -17,585 |
+| 10 | turn_of_month | 24.2 | WEAK / NEGATIVE | 0 | INR -19,346 | 15.9% | INR -24,609 |
+| 11 | gap_continuation_100 | 17.5 | WEAK / NEGATIVE | 0 | INR -33,360 | 10.3% | INR -64,780 |
+| 12 | open_to_close | 5.0 | WEAK / NEGATIVE | 0 | INR -62,108 | 4.2% | INR -71,278 |
+| 13 | gap_continuation_050 | 3.3 | WEAK / NEGATIVE | 0 | INR -49,036 | 6.7% | INR -72,393 |
+
 ## Main observations
 
 - At the baseline 10 bps per side, only **gap_fade_050, gap_fade_100, close_to_open** had a positive median stock PnL.
