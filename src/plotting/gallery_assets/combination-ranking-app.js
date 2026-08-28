@@ -65,8 +65,9 @@
     visible.forEach((item) => {
       const row = document.createElement("tr");
       const comparableRank = item.cr ? `<small>C ${item.cr.toLocaleString()}</small>` : "";
+      const profitRank = `<small>P ${item.pr.toLocaleString()}</small>`;
       const sampleClass = item.qt === "COMPARABLE" ? "comparable" : item.qt === "LIMITED SAMPLE" ? "limited" : "";
-      row.innerHTML = `<td class="rank-cell">${item.r.toLocaleString()}${comparableRank}</td><td class="pair"><strong>${item.sy} × ${strategyName(item.st)}</strong><small>${item.co} · ${item.id}</small></td><td class="score">${item.sc.toFixed(1)}</td><td class="evidence ${tierTone(item.et)}">${item.et}<br>${item.pp}/5</td><td>${plainMoney(item.inv)}</td><td class="${tone(item.pnl)}">${money(item.pnl)}</td><td class="${tone(item.end - item.inv)}">${plainMoney(item.end)}</td><td class="${tone(item.sh ?? -1)}">${item.sh == null ? "—" : item.sh.toFixed(2)}</td><td class="${tone(item.p30)}">${money(item.p30)}</td><td>${(item.dd * 100).toFixed(1)}%</td><td>${item.tr.toLocaleString()}</td><td class="sample ${sampleClass}">${item.qt}</td>`;
+      row.innerHTML = `<td class="rank-cell">${item.r.toLocaleString()}${profitRank}${comparableRank}</td><td class="pair"><strong>${item.sy} × ${strategyName(item.st)}</strong><small>${item.co} · ${item.id}</small></td><td class="score">${item.sc.toFixed(1)}</td><td class="evidence ${tierTone(item.et)}">${item.et}<br>${item.pp}/5</td><td>${plainMoney(item.inv)}</td><td class="${tone(item.pnl)}">${money(item.pnl)}</td><td class="${tone(item.end - item.inv)}">${plainMoney(item.end)}</td><td class="${tone(item.sh ?? -1)}">${item.sh == null ? "—" : item.sh.toFixed(2)}</td><td class="${tone(item.p30)}">${money(item.p30)}</td><td>${(item.dd * 100).toFixed(1)}%</td><td>${item.tr.toLocaleString()}</td><td class="sample ${sampleClass}">${item.qt}</td>`;
       row.addEventListener("click", () => { location.href = `index.html#${item.id}`; });
       body.appendChild(row);
     });
