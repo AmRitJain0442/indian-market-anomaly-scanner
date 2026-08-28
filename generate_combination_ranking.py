@@ -26,7 +26,7 @@ def main() -> None:
     gzip_path = output_dir / "stock_strategy_combination_ranking.csv.gz"
     chart_path = output_dir / "stock_strategy_combination_leaders.png"
     ranked.to_csv(csv_path, index=False)
-    ranked.to_csv(gzip_path, index=False, compression="gzip")
+    ranked.to_csv(gzip_path, index=False, compression={"method": "gzip", "mtime": 0})
     plot_combination_leaders(ranked, chart_path)
     write_combination_gallery(ranked, CONFIG.results_dir / "stock_gallery", float(metadata["initial_capital"]))
     shutil.copy2(gzip_path, CONFIG.results_dir / "stock_gallery" / gzip_path.name)
