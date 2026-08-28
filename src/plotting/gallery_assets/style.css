@@ -53,6 +53,12 @@ h1 em { color: var(--gold); font-weight: 400; }
 .counter { display: grid; text-align: right; }
 .counter strong { color: var(--green); font: 500 30px "DM Mono"; }
 .counter span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+.header-tools { display: flex; align-items: center; gap: 28px; }
+.ranking-link {
+  color: var(--gold); border-bottom: 1px solid var(--gold); padding: 7px 0;
+  text-decoration: none; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.ranking-link:hover { color: var(--ink); border-color: var(--ink); }
 
 main { height: calc(100vh - 142px); display: grid; grid-template-columns: 330px minmax(0, 1fr); }
 .rail { padding: 28px 22px; border-right: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; }
@@ -97,6 +103,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 
 @media (max-width: 900px) {
   .masthead { height: 112px; padding: 22px; }
   .counter { display: none; }
+  .header-tools { gap: 10px; }
   main { height: auto; min-height: calc(100vh - 112px); grid-template-columns: 1fr; }
   .rail { border-right: 0; border-bottom: 1px solid var(--line); max-height: 310px; }
   .viewer { padding: 20px 14px; min-height: 72vh; }
@@ -104,4 +111,3 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 
   .actions { flex-wrap: wrap; }
   footer { flex-direction: column; }
 }
-

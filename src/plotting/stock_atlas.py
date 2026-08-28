@@ -362,4 +362,11 @@ def generate_stock_gallery(
         "window.STOCK_ATLAS = " + json.dumps(manifest, separators=(",", ":")) + ";\n",
         encoding="utf-8",
     )
+    summary_path = config.results_dir / "market_summary.csv"
+    if summary_path.exists():
+        from src.backtest.strategy_ranking import rank_strategies_collectively
+        from src.plotting.collective_ranking import write_gallery_ranking
+
+        collective = rank_strategies_collectively(pd.read_csv(summary_path))
+        write_gallery_ranking(collective, output_dir)
     return manifest

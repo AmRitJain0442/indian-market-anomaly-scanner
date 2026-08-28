@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.backtest.strategy_ranking import rank_strategies_collectively
+
 
 def _money(value: float) -> str:
     return f"INR {value:,.0f}"
@@ -21,6 +23,10 @@ def _table(frame: pd.DataFrame, columns: list[str]) -> str:
             value = row[column]
             if column.endswith("pnl") or column in ("net_pnl", "median_net_pnl", "equal_weight_pnl"):
                 values.append(_money(float(value)))
+            elif column in ("collective_rank", "positive_pillars"):
+                values.append(str(int(value)))
+            elif column == "collective_score":
+                values.append(f"{float(value):.1f}")
             elif column.startswith("pct_"):
                 values.append(f"{float(value):.1%}")
             elif isinstance(value, float):
@@ -53,6 +59,8 @@ def write_findings(
         .head(10)
     )
     summary.to_csv(output / "strategy_overview.csv", index=False)
+    collective = rank_strategies_collectively(summary)
+    collective.to_csv(output / "collective_strategy_ranking.csv", index=False)
     top.to_csv(output / "top10_by_strategy.csv", index=False)
     bottom.to_csv(output / "bottom10_by_strategy.csv", index=False)
     comparable_liquid.to_csv(output / "top10_liquid_comparable.csv", index=False)
@@ -77,6 +85,20 @@ def write_findings(
         ),
         "",
     ]
+
+    lines.extend(
+        [
+            "## Collective strategy ranking",
+            "",
+            "The collective score equally weights relative ranks for median stock PnL, profitable-stock breadth, equal-weight universe PnL, median Sharpe, and profitable breadth at 30 bps per side. The score is relative; the evidence tier separately counts absolute positive pillars.",
+            "",
+            _table(
+                collective,
+                ["collective_rank", "strategy", "collective_score", "evidence_tier", "positive_pillars", "median_net_pnl", "pct_profitable", "equal_weight_pnl"],
+            ),
+            "",
+        ]
+    )
 
     positive_median = summary.loc[summary["median_net_pnl"].gt(0), "strategy"].tolist()
     gap_100 = summary.loc[summary["strategy"].eq("gap_fade_100")].iloc[0]
@@ -141,6 +163,7 @@ def write_findings(
     for filename in (
         "strategy_breadth.png",
         "strategy_cost_sensitivity.png",
+        "collective_strategy_ranking.png",
         "close_to_open_distribution.png",
         "close_to_open_equal_weight.png",
         "close_to_open_top20.png",

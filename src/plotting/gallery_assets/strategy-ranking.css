@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Libre+Caslon+Display&display=swap');
+:root { --ink:#efe8d3; --muted:#929d91; --ground:#0e120f; --panel:#181e1a; --line:#303a33; --gold:#e6ba62; --green:#68d391; --red:#f37a6b; --cyan:#78c6d0; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:radial-gradient(circle at 84% 0,rgba(230,186,98,.14),transparent 33rem),var(--ground); font-family:"DM Mono",monospace; }
+.grain { position:fixed;inset:0;opacity:.1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E"); }
+header { display:flex;justify-content:space-between;padding:25px 4vw;border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted); }
+header a { color:var(--gold);text-decoration:none; }
+main { width:min(1480px,92vw);margin:auto; }
+.hero { padding:76px 0 56px;display:grid;grid-template-columns:1.2fr .8fr;align-items:end;gap:9vw; }
+.eyebrow { margin:0 0 12px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.16em; }
+h1,h2 { font-family:"Libre Caslon Display",Georgia,serif;font-weight:400;margin:0; }
+h1 { grid-column:1;font-size:clamp(54px,7vw,106px);line-height:.88;letter-spacing:-.035em; }
+h1 em { color:var(--gold);font-weight:400; }
+.lede { grid-column:2;margin:0;color:var(--muted);font-size:14px;line-height:1.8;max-width:510px; }
+.podium { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0 32px; }
+.winner { min-height:240px;padding:25px;border:1px solid var(--line);background:linear-gradient(145deg,var(--panel),#111512);position:relative;overflow:hidden; }
+.winner::after { content:attr(data-rank);position:absolute;right:-8px;bottom:-40px;font:150px "Libre Caslon Display";color:rgba(239,232,211,.045); }
+.winner .rank { color:var(--gold);font-size:11px;letter-spacing:.15em; }
+.winner h3 { margin:35px 0 9px;font:31px "Libre Caslon Display";text-transform:uppercase; }
+.winner .score { color:var(--green);font-size:26px; }
+.winner .tier { margin-top:22px;display:inline-block;border:1px solid currentColor;padding:6px 8px;font-size:10px; }
+.method { display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);margin:32px 0 80px; }
+.method div { padding:20px;border-right:1px solid var(--line);display:grid;gap:9px; }
+.method div:last-child { border:0; }.method span { color:var(--gold);font-size:10px; }.method strong { font-size:12px; }.method small { color:var(--muted);line-height:1.45; }
+.ledger { margin-bottom:60px; }.ledger-head { display:flex;justify-content:space-between;align-items:end;margin-bottom:20px; }.ledger-head h2 { font-size:44px; }.ledger-head>p { color:var(--muted);font-size:11px; }
+.table-wrap { overflow-x:auto;border:1px solid var(--line); }
+table { width:100%;border-collapse:collapse;background:rgba(17,21,18,.75);font-size:12px; }
+th { color:var(--muted);text-align:right;font-weight:400;text-transform:uppercase;font-size:9px;letter-spacing:.08em;padding:14px 12px;border-bottom:1px solid var(--line); }
+th:nth-child(2),td:nth-child(2){text-align:left} td { padding:15px 12px;text-align:right;border-bottom:1px solid #242d27;white-space:nowrap; }
+tbody tr:hover { background:#1d251f; }.strategy { color:var(--ink);font-weight:500; }.score-cell { color:var(--gold);font-weight:500; }.tier { font-size:9px; }.positive { color:var(--green); }.negative { color:var(--red); }
+footer { border-top:1px solid var(--line);padding:25px 0 45px;color:var(--muted);font-size:10px; }
+@media(max-width:850px){.hero{grid-template-columns:1fr}.lede{grid-column:1}.podium{grid-template-columns:1fr}.method{grid-template-columns:1fr}.method div{border-right:0;border-bottom:1px solid var(--line)}header p{display:none}}
+

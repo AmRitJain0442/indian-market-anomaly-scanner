@@ -33,6 +33,14 @@ python generate_stock_gallery.py
 
 Open `results/stock_gallery/index.html` for the searchable gallery. Search by symbol, company, or ISIN; filter for liquid or ≥95%-coverage securities; navigate with the arrow keys; and download any full-resolution WebP. The complete generated snapshot is also published in the [atlas-2026-08-27 GitHub release](https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/tag/atlas-2026-08-27).
 
+Generate the market-wide collective strategy leaderboard with:
+
+```bash
+python generate_strategy_ranking.py
+```
+
+This ranks strategies using five equally weighted pillars: median stock net PnL, profitable-stock breadth, equal-weight universe PnL, median stock Sharpe, and profitable breadth at 30 bps per side. The gallery links to the resulting interactive leaderboard.
+
 The command writes normalized Parquet data under `data/processed/` and complete research artifacts under `results/`. Raw and processed market files are intentionally ignored by Git; curated, dated findings live in `results/findings/`.
 
 ## Scope and caveats

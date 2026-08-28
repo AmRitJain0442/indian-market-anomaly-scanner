@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collective Strategy Ranking · NSE Anomaly Atlas</title>
+  <link rel="stylesheet" href="strategy-ranking.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header>
+    <a href="index.html">← Stock atlas</a>
+    <p>Market-wide evidence ledger · 252 completed sessions</p>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Five-pillar collective model</p>
+      <h1>Which anomalies<br><em>worked together?</em></h1>
+      <p class="lede">No single-stock heroics. Every strategy is judged by its typical stock, breadth, universe portfolio, risk-adjusted outcome, and survival under severe costs.</p>
+    </section>
+    <section id="podium" class="podium" aria-label="Top three collective strategies"></section>
+    <section class="method">
+      <div><span>01</span><strong>Median stock PnL</strong><small>Typical outcome, not the best outlier</small></div>
+      <div><span>02</span><strong>Profitable breadth</strong><small>Share of all securities above zero</small></div>
+      <div><span>03</span><strong>Equal-weight PnL</strong><small>One universe-level daily portfolio</small></div>
+      <div><span>04</span><strong>Median Sharpe</strong><small>Typical risk-adjusted result</small></div>
+      <div><span>05</span><strong>30 bps survival</strong><small>Breadth under harsh friction</small></div>
+    </section>
+    <section class="ledger">
+      <div class="ledger-head">
+        <div><p class="eyebrow">Complete leaderboard</p><h2>All thirteen strategies</h2></div>
+        <p>Score is relative. Tier is absolute.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Strategy</th><th>Score</th><th>Evidence</th><th>Median PnL</th><th>Breadth</th><th>EW PnL</th><th>Sharpe</th><th>30 bps</th></tr></thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+    </section>
+    <footer>Relative discovery ranking—not a probability, forecast, or trading recommendation.</footer>
+  </main>
+  <script src="strategy-ranking-data.js"></script>
+  <script src="strategy-ranking-app.js"></script>
+</body>
+</html>
+
