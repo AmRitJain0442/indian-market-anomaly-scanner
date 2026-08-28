@@ -23,6 +23,16 @@ python run_research.py --no-download          # reuse processed data
 python run_research.py --end-date 2026-08-27 # reproduce a dated run
 ```
 
+## Complete stock × strategy visual atlas
+
+After a research run, generate one atlas for every stock. Each image contains all 13 strategy curves, so the current findings produce 2,652 images covering 34,476 stock-strategy graphs:
+
+```bash
+python generate_stock_gallery.py
+```
+
+Open `results/stock_gallery/index.html` for the searchable gallery. Search by symbol, company, or ISIN; filter for liquid or ≥95%-coverage securities; navigate with the arrow keys; and download any full-resolution WebP. The complete generated snapshot is also published in the [atlas-2026-08-27 GitHub release](https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/tag/atlas-2026-08-27).
+
 The command writes normalized Parquet data under `data/processed/` and complete research artifacts under `results/`. Raw and processed market files are intentionally ignored by Git; curated, dated findings live in `results/findings/`.
 
 ## Scope and caveats
@@ -48,6 +58,7 @@ The first full-market set follows the brief: close-to-next-open, open-to-close, 
 - `results/equity_curves/`: every daily stock-strategy curve
 - `results/trades/`: every executed signal
 - `results/figures/`: top/bottom curves, distributions, rankings, breadth, and diagnostics
+- `results/stock_gallery/`: searchable atlas with one all-strategy image per stock
 - `results/findings/`: compact committed snapshot and interpretation of the executed run
 
 ## Data provenance

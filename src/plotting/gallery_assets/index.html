@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NSE Anomaly Atlas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">252-session research archive</p>
+      <h1>NSE Anomaly <em>Atlas</em></h1>
+    </div>
+    <div class="counter"><strong id="chartCount">—</strong><span>strategy charts</span></div>
+  </header>
+
+  <main>
+    <aside class="rail">
+      <label for="search">Find a security</label>
+      <div class="search-wrap">
+        <input id="search" type="search" autocomplete="off" placeholder="Symbol, company, or ISIN">
+        <kbd>/</kbd>
+      </div>
+      <div class="filters" aria-label="Gallery filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="liquid">Liquid</button>
+        <button data-filter="full">≥95% history</button>
+      </div>
+      <div id="results" class="results" role="listbox"></div>
+    </aside>
+
+    <section class="viewer">
+      <div class="viewer-head">
+        <div>
+          <p id="position" class="position">— / —</p>
+          <h2 id="symbol">Loading…</h2>
+          <p id="company" class="company"></p>
+        </div>
+        <div class="actions">
+          <button id="previous" aria-label="Previous security">← Prev</button>
+          <button id="next" aria-label="Next security">Next →</button>
+          <a id="download" download>Download WebP</a>
+        </div>
+      </div>
+      <div class="image-stage">
+        <div class="loading" id="loading">Rendering ledger…</div>
+        <img id="atlas" alt="All-strategy anomaly atlas for selected NSE security">
+      </div>
+      <footer>
+        <span>13 strategies · INR 100,000 initial capital · 10 bps per side</span>
+        <span>In-sample discovery, not a trading recommendation</span>
+      </footer>
+    </section>
+  </main>
+  <script src="manifest.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
