@@ -23,9 +23,9 @@ class ResearchConfig:
     comparable_coverage_ratio: float = 0.95
     low_liquidity_value_inr: float = 1_000_000.0
     near_zero_volume: int = 100
-    download_workers: int = 6
+    download_workers: int = 2
     request_timeout_seconds: int = 30
-    request_retries: int = 3
+    request_retries: int = 5
     plot_top_n: int = 20
     gap_thresholds: tuple[float, ...] = (0.005, 0.010)
     reversal_1d_threshold: float = 0.020
@@ -48,4 +48,3 @@ class ResearchConfig:
 
 
 CONFIG = ResearchConfig()
-

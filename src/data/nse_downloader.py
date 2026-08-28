@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import random
 import time
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -19,6 +20,10 @@ from config import ResearchConfig
 
 LOGGER = logging.getLogger(__name__)
 UDIFF_START = date(2024, 7, 8)
+
+
+class DownloadFailure(RuntimeError):
+    """A session could not be classified as available or absent."""
 
 
 @dataclass(frozen=True)
@@ -112,12 +117,13 @@ class NSEDownloader:
 
         for attempt in range(self.config.request_retries):
             try:
+                time.sleep(random.uniform(0.05, 0.20))
                 response = requests.get(
                     url,
                     headers=self.headers,
                     timeout=self.config.request_timeout_seconds,
                 )
-                if response.status_code in (403, 404):
+                if response.status_code == 404:
                     return None
                 response.raise_for_status()
                 if not response.content.startswith(b"PK"):
@@ -132,9 +138,10 @@ class NSEDownloader:
                 return DownloadedSession(session_date, path, url, _sha256(path))
             except (requests.RequestException, OSError, ValueError) as exc:
                 if attempt + 1 == self.config.request_retries:
-                    LOGGER.warning("Failed %s after retries: %s", session_date, exc)
-                    return None
-                time.sleep(0.5 * (2**attempt))
+                    raise DownloadFailure(
+                        f"Could not classify {session_date} after retries: {exc}"
+                    ) from exc
+                time.sleep(min(1.0 * (2**attempt), 8.0))
         return None
 
     def collect_sessions(
@@ -158,6 +165,7 @@ class NSEDownloader:
             with ThreadPoolExecutor(max_workers=self.config.download_workers) as pool:
                 futures = {pool.submit(self.download_one, day): day for day in batch}
                 for future in as_completed(futures):
+                    # A network failure must never be silently interpreted as a holiday.
                     result = future.result()
                     if result is not None:
                         found[result.session_date] = result
@@ -189,4 +197,3 @@ class NSEDownloader:
         path = self.config.raw_dir / "download_manifest.json"
         path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         return path
-
