@@ -369,4 +369,11 @@ def generate_stock_gallery(
 
         collective = rank_strategies_collectively(pd.read_csv(summary_path))
         write_gallery_ranking(collective, output_dir)
+    combination_path = config.results_dir / "strategy_results" / "all_stock_strategy_results.csv"
+    if combination_path.exists():
+        from src.backtest.combination_ranking import rank_stock_strategy_combinations
+        from src.plotting.combination_ranking import write_combination_gallery
+
+        combinations = rank_stock_strategy_combinations(pd.read_csv(combination_path))
+        write_combination_gallery(combinations, output_dir, dataset.initial_capital)
     return manifest

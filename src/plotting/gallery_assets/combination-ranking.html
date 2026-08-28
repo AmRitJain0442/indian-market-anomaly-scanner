@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock × Strategy Ranking · NSE Anomaly Atlas</title>
+  <link rel="stylesheet" href="combination-ranking.css">
+</head>
+<body>
+  <div class="tape" aria-hidden="true"><span>34,476 PAIRS / 2,652 STOCKS / 13 STRATEGIES / 252 SESSIONS</span></div>
+  <header class="topbar">
+    <a href="index.html">← Stock atlas</a>
+    <nav><a class="active" href="combination-ranking.html">Stock × strategy</a><a href="strategy-ranking.html">Strategy-only view</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">The complete pairing ledger</p>
+        <h1>Every stock.<br>Every strategy.<br><em>One ranking.</em></h1>
+      </div>
+      <div class="hero-note">
+        <span class="stamp">IN-SAMPLE<br>RESEARCH</span>
+        <p>Each pair starts with <strong id="heroInvestment">INR 100,000</strong>. Score blends realised profit, risk-adjusted return, 30 bps cost survival, drawdown resilience, and excess over buy-and-hold.</p>
+        <dl><div><dt id="pairCount">—</dt><dd>ranked pairs</dd></div><div><dt>5</dt><dd>score pillars</dd></div></dl>
+      </div>
+    </section>
+
+    <section class="leaders">
+      <div class="section-label"><span>01</span><div><p class="eyebrow">Overall podium</p><h2>Top combinations</h2></div></div>
+      <div id="podium" class="podium"></div>
+    </section>
+
+    <section class="method-strip" aria-label="Ranking methodology">
+      <div><b>25%</b><span>Net profit</span></div>
+      <div><b>20%</b><span>Sharpe</span></div>
+      <div><b>20%</b><span>30 bps profit</span></div>
+      <div><b>20%</b><span>Excess profit</span></div>
+      <div><b>15%</b><span>Drawdown resilience</span></div>
+    </section>
+
+    <section class="ledger">
+      <div class="section-label"><span>02</span><div><p class="eyebrow">Search all combinations</p><h2>Ranking ledger</h2></div></div>
+      <div class="controls">
+        <label class="search-field"><span>Stock / company / ISIN</span><input id="search" type="search" placeholder="Type to search…" autocomplete="off"></label>
+        <label><span>Strategy</span><select id="strategy"><option value="all">All strategies</option></select></label>
+        <label><span>Sample</span><select id="sample"><option value="all">All samples</option><option value="COMPARABLE">Comparable only</option><option value="LOW LIQUIDITY">Low liquidity</option><option value="LIMITED SAMPLE">Limited sample</option></select></label>
+        <label><span>Evidence</span><select id="evidence"><option value="all">All evidence</option><option value="ROBUST POSITIVE">Robust positive</option><option value="BROAD POSITIVE">Broad positive</option><option value="MIXED">Mixed</option><option value="WEAK / NEGATIVE">Weak / negative</option></select></label>
+        <label><span>Order</span><select id="sort"><option value="rank">Combination score</option><option value="profit">Net profit</option><option value="comparable">Comparable rank</option><option value="sharpe">Sharpe</option><option value="cost">30 bps profit</option></select></label>
+      </div>
+      <div class="ledger-meta">
+        <p><strong id="resultCount">—</strong> matches <span>· click a row to open its 13-strategy stock atlas</span></p>
+        <div><a class="download" href="stock_strategy_combination_ranking.csv.gz" download>Download all CSV.gz</a><button id="previous">← Previous 100</button><span id="page">—</span><button id="next">Next 100 →</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Stock + strategy</th><th>Score</th><th>Evidence</th><th>Initial investment</th><th>Profit</th><th>Ending value</th><th>Sharpe</th><th>30 bps PnL</th><th>Drawdown</th><th>Trades</th><th>Sample</th></tr></thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+      <div class="legend"><p><i class="robust"></i> Robust positive = all five absolute evidence tests pass.</p><p><i class="comparable"></i> Comparable = ≥95% history, OK liquidity, ≥20 trades.</p></div>
+    </section>
+  </main>
+  <footer>Relative discovery ranking—not a probability, forecast, or trading recommendation.</footer>
+  <script src="combination-ranking-data.js"></script>
+  <script src="combination-ranking-app.js"></script>
+</body>
+</html>

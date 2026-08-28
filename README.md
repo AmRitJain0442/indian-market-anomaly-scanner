@@ -41,6 +41,14 @@ python generate_strategy_ranking.py
 
 This ranks strategies using five equally weighted pillars: median stock net PnL, profitable-stock breadth, equal-weight universe PnL, median stock Sharpe, and profitable breadth at 30 bps per side. The gallery links to the resulting interactive leaderboard.
 
+Rank every individual stock-strategy pair with:
+
+```bash
+python generate_combination_ranking.py
+```
+
+This creates a searchable leaderboard for all 34,476 combinations. Every row shows the INR 100,000 initial investment, realised profit, ending value, composite score, pure-profit rank, cost sensitivity, risk, evidence tier, and sample-quality label. It also publishes a separate comparable rank for liquid securities with at least 95% history and 20 trades.
+
 The command writes normalized Parquet data under `data/processed/` and complete research artifacts under `results/`. Raw and processed market files are intentionally ignored by Git; curated, dated findings live in `results/findings/`.
 
 ## Scope and caveats
@@ -67,6 +75,7 @@ The first full-market set follows the brief: close-to-next-open, open-to-close, 
 - `results/trades/`: every executed signal
 - `results/figures/`: top/bottom curves, distributions, rankings, breadth, and diagnostics
 - `results/stock_gallery/`: searchable atlas with one all-strategy image per stock
+- `results/combination_rankings/`: complete stock × strategy leaderboard and compressed export
 - `results/findings/`: compact committed snapshot and interpretation of the executed run
 
 ## Data provenance
