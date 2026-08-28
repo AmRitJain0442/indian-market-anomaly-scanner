@@ -33,10 +33,8 @@ class ResearchConfig:
     turn_of_month_days: int = 3
     volume_ratio_threshold: float = 2.0
     volume_move_threshold: float = 0.020
-    user_agent: str = (
-        "Mozilla/5.0 (compatible; indian-market-anomalies/0.1; "
-        "+https://github.com/AmRitJain0442)"
-    )
+    # NSE's archive rejects some bot-identifying user agents even for public reports.
+    user_agent: str = "Mozilla/5.0"
     raw_dir: Path = field(init=False)
     processed_dir: Path = field(init=False)
     results_dir: Path = field(init=False)

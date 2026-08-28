@@ -103,7 +103,6 @@ class NSEDownloader:
         self.headers = {
             "User-Agent": config.user_agent,
             "Accept": "application/zip,application/octet-stream,*/*",
-            "Referer": "https://www.nseindia.com/all-reports",
         }
 
     def path_for(self, session_date: date) -> Path:
