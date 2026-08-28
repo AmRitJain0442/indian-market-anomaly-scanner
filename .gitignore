@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Downloaded exchange data is reproducible and too large for git.
+data/raw/**
+data/processed/**
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Generated research outputs. Curated findings are committed separately.
+results/**
+!results/.gitkeep
+!results/findings/**
+

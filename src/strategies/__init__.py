@@ -1,0 +1,2 @@
+"""Vectorized daily anomaly strategies."""
+
