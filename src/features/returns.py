@@ -18,6 +18,7 @@ def add_return_features(market: pd.DataFrame) -> pd.DataFrame:
     work["previous_observed_close"] = grouped["close"].shift(1)
     work["previous_session_number"] = grouped["session_number"].shift(1)
     work["next_open"] = grouped["open"].shift(-1)
+    work["next_date"] = grouped["date"].shift(-1)
     work["next_session_number"] = grouped["session_number"].shift(-1)
     previous_consecutive = work["session_number"].sub(work["previous_session_number"]).eq(1)
     next_consecutive = work["next_session_number"].sub(work["session_number"]).eq(1)
@@ -38,6 +39,9 @@ def add_return_features(market: pd.DataFrame) -> pd.DataFrame:
         lambda values: values.shift(1).rolling(20, min_periods=20).mean()
     )
     work["volume_ratio"] = work["volume"] / work["volume_ma20"].replace(0, np.nan)
+    work["previous_cc_signal"] = grouped["ret_cc"].shift(1).where(previous_consecutive)
+    work["previous_5d_signal"] = grouped["ret_5d"].shift(1).where(previous_consecutive)
+    work["previous_volume_ratio"] = grouped["volume_ratio"].shift(1).where(previous_consecutive)
 
     # Today's extreme discontinuity invalidates close-derived signals and returns.
     bad_today = work["corporate_action_flag"]
@@ -47,4 +51,3 @@ def add_return_features(market: pd.DataFrame) -> pd.DataFrame:
     work.loc[bad_today | bad_next, "ret_close_to_next_open"] = np.nan
     work.loc[bad_today, "ret_5d"] = np.nan
     return add_calendar_positions(work, calendar)
-
