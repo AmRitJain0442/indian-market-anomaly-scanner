@@ -49,6 +49,7 @@ class AtlasDataset:
     equity: dict[str, np.ndarray]
     metrics: dict[str, pd.DataFrame]
     dates: pd.DatetimeIndex
+    initial_capital: float
 
 
 def _font(path: str, size: int) -> ImageFont.FreeTypeFont:
@@ -93,15 +94,29 @@ def _draw_curve_panel(
     values: np.ndarray,
     metric: pd.Series,
     fonts: dict,
+    initial_capital: float,
 ) -> None:
     left, top, right, bottom = box
     draw.rounded_rectangle(box, radius=12, fill=PANEL, outline="#28322b", width=1)
-    draw.text((left + 18, top + 14), strategy.replace("_", " ").upper(), font=fonts["small"], fill=INK)
+    draw.text((left + 18, top + 16), strategy.replace("_", " ").upper(), font=fonts["small"], fill=INK)
     pnl = float(metric["net_pnl"])
     color = GREEN if pnl >= 0 else RED
-    draw.text((right - 18, top + 14), _compact_money(pnl), font=fonts["small"], fill=color, anchor="ra")
+    draw.text(
+        (right - 18, top + 12),
+        f"INV INR {initial_capital:,.0f}",
+        font=fonts["tiny"],
+        fill=MUTED,
+        anchor="ra",
+    )
+    draw.text(
+        (right - 18, top + 35),
+        f"PNL {_compact_money(pnl)}",
+        font=fonts["tiny"],
+        fill=color,
+        anchor="ra",
+    )
 
-    chart = (left + 18, top + 52, right - 18, bottom - 45)
+    chart = (left + 18, top + 67, right - 18, bottom - 45)
     x0, y0, x1, y1 = chart
     finite = values[np.isfinite(values)]
     if not len(finite):
@@ -205,7 +220,14 @@ def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
                 circuit_like_sessions=int(row["circuit_like_sessions"]),
             )
         )
-    return AtlasDataset(strategies, records, equity, metrics, dates)
+    return AtlasDataset(
+        strategies,
+        records,
+        equity,
+        metrics,
+        dates,
+        float(metadata["initial_capital"]),
+    )
 
 
 def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path) -> Path:
@@ -246,6 +268,7 @@ def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path)
             dataset.equity[strategy][record.index],
             metric,
             fonts,
+            dataset.initial_capital,
         )
 
     _draw_info_panel(
@@ -277,7 +300,7 @@ def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path)
         boxes[15],
         "READ THIS FIRST",
         [
-            ("Capital", "INR 100,000"),
+            ("Capital", f"INR {dataset.initial_capital:,.0f}"),
             ("Primary rank", "NET PNL"),
             ("Shorts", "RESEARCH ONLY"),
             ("Status", "IN-SAMPLE"),
@@ -340,4 +363,3 @@ def generate_stock_gallery(
         encoding="utf-8",
     )
     return manifest
-
