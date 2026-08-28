@@ -4,6 +4,10 @@ A reproducible, exchange-wide scanner for daily anomalies in NSE cash equities. 
 
 The source brief is preserved in [`indian_market_anomaly_scanner_252d.md`](indian_market_anomaly_scanner_252d.md).
 
+## Latest executed findings
+
+The committed full-market snapshot through 27 August 2026 is in [`results/findings/2026-08-27/`](results/findings/2026-08-27/README.md). It covers 2,652 historical ordinary equities over 252 completed sessions after a 550-session data build. The snapshot includes the strategy overview, raw and liquid/comparable leaders, bottom rankings, cost sensitivity, and selected figures.
+
 ## Quick start
 
 ```bash
@@ -48,4 +52,4 @@ The first full-market set follows the brief: close-to-next-open, open-to-close, 
 
 ## Data provenance
 
-Market data comes from NSE's official daily report archive. UDiFF bhavcopies are used from 8 July 2024 onward and legacy CM bhavcopies before that date. The downloader caches each ZIP and records SHA-256 hashes in a manifest.
+Market data comes from [NSE's official daily report archive](https://www.nseindia.com/all-reports). UDiFF bhavcopies are used from 8 July 2024 onward and legacy CM bhavcopies before that date; NSE publishes the [UDiFF format resources here](https://www.nseindia.com/static/resources/forms-formats-members). The downloader caches each ZIP and records SHA-256 hashes in a manifest.
