@@ -42,6 +42,18 @@ The collective score equally weights relative ranks for median stock PnL, profit
 | 12 | open_to_close | 5.0 | WEAK / NEGATIVE | 0 | INR -62,108 | 4.2% | INR -71,278 |
 | 13 | gap_continuation_050 | 3.3 | WEAK / NEGATIVE | 0 | INR -49,036 | 6.7% | INR -72,393 |
 
+## Stock × strategy combination ranking
+
+All **34,476 stock-strategy pairs** are ranked in the [complete combination report](STOCK_STRATEGY_COMBINATION_RANKING.md). Every profit is shown beside its **INR 100,000 initial investment** and ending value. The [full compressed ranking](stock_strategy_combination_ranking.csv.gz), [top 500 CSV](top500_stock_strategy_combinations.csv), and [leader chart](stock_strategy_combination_leaders.png) are included.
+
+| Overall rank | Stock | Strategy | Score | Initial investment | Profit | Ending value | Sample |
+|---:|---|---|---:|---:|---:|---:|---|
+| 1 | SITINET | gap_fade_050 | 99.2 | INR 100,000 | INR 4,994,940 | INR 5,094,940 | LOW LIQUIDITY |
+| 2 | SITINET | gap_fade_100 | 99.2 | INR 100,000 | INR 4,994,940 | INR 5,094,940 | LOW LIQUIDITY |
+| 3 | ANKITMETAL | gap_fade_100 | 98.9 | INR 100,000 | INR 5,709,899 | INR 5,809,899 | LOW LIQUIDITY |
+
+The top comparable pair is **VHLTD × gap_fade_050** (overall rank 13, score 98.5): INR 3,626,746 profit and INR 3,726,746 ending value on INR 100,000 initial investment. “Comparable” requires ≥95% history, OK liquidity, and ≥20 trades.
+
 ## Main observations
 
 - At the baseline 10 bps per side, only **gap_fade_050, gap_fade_100, close_to_open** had a positive median stock PnL.
