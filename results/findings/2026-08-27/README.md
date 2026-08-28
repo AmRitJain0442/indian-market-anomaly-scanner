@@ -60,6 +60,8 @@ The [complete INR 10,000 plan](INVESTMENT_PLAN_10000.md) converts the strongest 
 
 The plan uses a stricter five-name `gap_fade_100` watchlist. Every candidate has ≥99% history, ≥50 trades, ≥INR 5 crore median daily traded value, no detected discontinuity, at most two circuit-like sessions, a positive confidence floor, and independently positive historical long and short legs. The adjacent [watchlist CSV](investment_plan_10000_watchlist.csv) and [paper-trade log](pilot_trade_log_template.csv) support execution review.
 
+The [30-session calendar](investment_plan_30_sessions.csv) covers every NSE trading session from 31 August through 13 October 2026, excluding 14 September and 2 October. Each day specifies the decision, execution clock, and measurable process target. Reinvestment uses current closing equity: half-size caps notional/risk at 25%/0.25%; the later full pilot caps them at 50%/0.5%.
+
 This is a research-to-paper-trading protocol—not a recommendation to immediately deploy the INR 10,000. The protective stop, fill tolerance, stricter screen, and 15:15 exit were not separately backtested and must pass the paper gate.
 
 ## Main observations
