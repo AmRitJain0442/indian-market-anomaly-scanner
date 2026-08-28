@@ -9,6 +9,7 @@ import pandas as pd
 
 from config import CONFIG
 from src.planning.investment_plan import build_investment_plan
+from src.planning.thirty_day_plan import build_thirty_day_calendar
 from src.plotting.investment_plan import write_investment_plan_gallery, write_investment_plan_report
 
 
@@ -25,19 +26,25 @@ def main() -> None:
     write_investment_plan_gallery(plan, CONFIG.results_dir / "stock_gallery", metadata["evaluation_end"])
 
     log_columns = [
-        "session_date", "symbol", "watchlist_rank", "prior_close", "opening_price",
+        "session_day", "session_date", "phase", "account_equity_start", "high_water_mark",
+        "symbol", "watchlist_rank", "prior_close", "opening_price",
         "gap_pct", "side", "planned_entry", "actual_entry", "entry_slippage_bps",
         "quantity", "stop_price", "exit_deadline", "actual_exit", "gross_pnl",
         "brokerage", "taxes_fees", "net_pnl", "short_available", "order_rejected",
-        "rule_breach", "skip_reason", "notes", "running_pilot_pnl",
+        "rule_breach", "skip_reason", "notes", "account_equity_close", "drawdown_pct",
+        "consecutive_losses", "running_pilot_pnl",
     ]
     log_path = output_dir / "pilot_trade_log_template.csv"
     pd.DataFrame(columns=log_columns).to_csv(log_path, index=False)
     shutil.copy2(log_path, CONFIG.results_dir / "stock_gallery" / log_path.name)
+    calendar_path = output_dir / "investment_plan_30_sessions.csv"
+    pd.DataFrame(build_thirty_day_calendar()).to_csv(calendar_path, index=False)
+    shutil.copy2(calendar_path, CONFIG.results_dir / "stock_gallery" / calendar_path.name)
 
     findings = CONFIG.results_dir / "findings" / metadata["evaluation_end"]
     plan.to_csv(findings / "investment_plan_10000_watchlist.csv", index=False)
     shutil.copy2(log_path, findings / log_path.name)
+    shutil.copy2(calendar_path, findings / calendar_path.name)
     write_investment_plan_report(plan, findings / "INVESTMENT_PLAN_10000.md", metadata["evaluation_end"])
     print(plan[["watchlist_rank", "symbol", "combination_score", "historical_pnl_10k", "long_pnl_10k", "short_pnl_10k"]].to_string(index=False))
     print(f"Plan ready: {CONFIG.results_dir / 'stock_gallery' / 'investment-plan.html'}")

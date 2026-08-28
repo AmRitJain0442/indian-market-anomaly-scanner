@@ -10,14 +10,19 @@ import pandas as pd
 
 from src.planning.investment_plan import (
     DAILY_LOSS_LIMIT,
+    DAILY_LOSS_RATIO,
     ELIGIBILITY_RULES,
     MAX_POSITION,
+    MAX_POSITION_RATIO,
     PILOT_DRAWDOWN_LIMIT,
+    PILOT_DRAWDOWN_RATIO,
     PLAN_CAPITAL,
     PRIMARY_STRATEGY,
     RISK_PER_TRADE,
+    RISK_PER_TRADE_RATIO,
     STOP_DISTANCE,
 )
+from src.planning.thirty_day_plan import build_thirty_day_calendar
 
 
 def plan_records(plan: pd.DataFrame) -> list[dict]:
@@ -66,10 +71,15 @@ def write_investment_plan_gallery(plan: pd.DataFrame, gallery_dir: Path, evaluat
         "daily_loss_limit": DAILY_LOSS_LIMIT,
         "drawdown_limit": PILOT_DRAWDOWN_LIMIT,
         "stop_distance": STOP_DISTANCE,
+        "max_position_ratio": MAX_POSITION_RATIO,
+        "risk_per_trade_ratio": RISK_PER_TRADE_RATIO,
+        "daily_loss_ratio": DAILY_LOSS_RATIO,
+        "drawdown_ratio": PILOT_DRAWDOWN_RATIO,
         "strategy": PRIMARY_STRATEGY,
         "evaluation_end": evaluation_end,
         "eligibility": ELIGIBILITY_RULES,
         "watchlist": plan_records(plan),
+        "calendar": build_thirty_day_calendar(),
     }
     output = gallery_dir / "investment-plan-data.js"
     output.write_text(
@@ -98,7 +108,9 @@ def write_investment_plan_report(plan: pd.DataFrame, output: Path, evaluation_en
         f"- Pause and review after cumulative pilot drawdown: **INR {PILOT_DRAWDOWN_LIMIT:,.0f}**",
         "- One position at a time; no averaging down; no overnight carry.",
         "",
-        "Position size is `floor(min(INR 5,000 / entry, INR 50 / (entry × 1%)))`. Half-size live validation divides both caps by two.",
+        "All settled gains and losses are reinvested mechanically: the next session starts from the prior session's closing account equity. Full-pilot maximum notional is 50% of current equity and planned risk is 0.5%; half-size validation uses 25% and 0.25%. Therefore position size is `floor(min(current_equity × stage_notional_pct / entry, current_equity × stage_risk_pct / (entry × 1%)))`.",
+        "",
+        "There is no daily rupee profit target. The tested setup exits at the close, so forcing a monetary target would add an untested rule and encourage overtrading. Each day instead has an execution target and a 15:15 exit target.",
         "",
         "## Three-stage gate",
         "",
@@ -116,13 +128,38 @@ def write_investment_plan_report(plan: pd.DataFrame, output: Path, evaluation_en
         "",
         "The stop, fill tolerance, 15:15 exit, and stricter liquidity screen are safety overlays and were **not** separately backtested in the 252-session result. That is why paper validation is mandatory.",
         "",
-        "## Strict watchlist",
+        "## Fixed daily clock",
         "",
-        "Candidates require 99% history, at least 50 signals, median daily value of at least INR 5 crore, no detected corporate-action discontinuity, at most two circuit-like sessions, positive confidence floor, and separately positive long and short legs.",
+        "- **08:45–09:00:** update current equity/high-water mark, prior closes, watchlist order, broker restrictions, and short availability.",
+        "- **09:00–09:08:** observe NSE pre-open; do not place a discretionary trade.",
+        "- **09:15–09:16:** calculate all five gaps, apply the ±1% threshold, choose the highest-priority eligible name, size from current equity, and fill within 10 bps or skip.",
+        "- **After entry:** place the 1% protective stop; no widening, averaging, or second position.",
+        "- **15:15:** exit the position regardless of PnL. The price target is the market outcome at the timed exit—not an invented fixed return.",
+        "- **15:40 onward:** reconcile fills, costs, net PnL, closing equity, high-water mark, drawdown, and next-session limits.",
         "",
-        "| Priority | Stock | Score | Overall pair rank | Historical PnL on scaled INR 10,000 | Ending value | 30 bps PnL | Long leg | Short leg |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|---:|",
+        "## Next 30 NSE trading sessions",
+        "",
+        "The calendar starts on 31 August 2026 and excludes NSE holidays on 14 September and 2 October. Every session follows the fixed clock above; the row supplies that day's extra decision and measurable target.",
+        "",
+        "| Day | Date | Phase | Daily focus | Decision | Target / pass condition |",
+        "|---:|---|---|---|---|---|",
     ]
+    for day in build_thirty_day_calendar():
+        lines.append(
+            f"| {day['day']} | {day['date']} ({day['weekday'][:3]}) | {day['phase']} | "
+            f"{day['focus']} | {day['decision']} | {day['target']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Strict watchlist",
+            "",
+            "Candidates require 99% history, at least 50 signals, median daily value of at least INR 5 crore, no detected corporate-action discontinuity, at most two circuit-like sessions, positive confidence floor, and separately positive long and short legs.",
+            "",
+            "| Priority | Stock | Score | Overall pair rank | Historical PnL on scaled INR 10,000 | Ending value | 30 bps PnL | Long leg | Short leg |",
+            "|---:|---|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
     for row in plan.itertuples(index=False):
         lines.append(
             f"| {row.watchlist_rank} | {row.symbol} | {row.combination_score:.1f} | {row.combination_rank:,} | "
@@ -146,6 +183,8 @@ def write_investment_plan_report(plan: pd.DataFrame, output: Path, evaluation_en
             "- [SEBI study: 7 out of 10 individual equity-cash intraday traders made losses](https://www.sebi.gov.in/media-and-notifications/press-releases/jul-2024/sebi-study-finds-that-7-out-of-10-individual-intraday-traders-in-equity-cash-segment-make-losses_84948.html)",
             "- [SEBI framework for short selling](https://www.sebi.gov.in/legal/circulars/jan-2024/framework-for-short-selling_80448.html)",
             "- [NSE implementation standards for retail API/algo access](https://nsearchives.nseindia.com/content/circulars/INVG67858.pdf)",
+            "- [NSE capital-market trading holidays for 2026](https://nsearchives.nseindia.com/content/circulars/CMTR71775.pdf)",
+            "- [NSE equity market timings](https://www.nseindia.com/static/market-data/market-timings)",
             "",
             "> This is a research-derived pilot protocol, not personalized investment advice or an assurance of returns.",
         ]

@@ -57,6 +57,8 @@ python generate_investment_plan.py
 
 The plan uses a strict, direction-checked 1% gap-fade watchlist and a three-stage paper → half-size → full-pilot gate. It caps one-position exposure at INR 5,000, planned risk at INR 50 per trade, daily loss at INR 100, and cumulative pilot drawdown at INR 500. These execution controls are deliberately stricter than the historical scanner and must be paper-validated before capital is used.
 
+The same page includes a dated 30-session operating calendar from 31 August through 13 October 2026, excluding NSE holidays. Each day has an explicit decision, fixed execution clock, measurable process target, and conditional phase. Reinvestment is percentage-based: the prior closing equity becomes the next day's sizing base, while exposure and risk remain capped at 25%/0.25% during half-size validation and 50%/0.5% during the full pilot.
+
 The command writes normalized Parquet data under `data/processed/` and complete research artifacts under `results/`. Raw and processed market files are intentionally ignored by Git; curated, dated findings live in `results/findings/`.
 
 ## Scope and caveats

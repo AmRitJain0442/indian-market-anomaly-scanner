@@ -29,9 +29,14 @@
 
     <section class="capital-grid">
       <article><span>01 / CAPITAL</span><strong id="capital">—</strong><p>Total pilot account</p></article>
-      <article><span>02 / EXPOSURE</span><strong id="maxPosition">—</strong><p>Maximum one-position notional</p></article>
-      <article><span>03 / TRADE RISK</span><strong id="tradeRisk">—</strong><p>Planned loss at the stop</p></article>
-      <article><span>04 / KILL SWITCH</span><strong id="drawdownLimit">—</strong><p>Cumulative drawdown: pause</p></article>
+      <article><span>02 / STARTING EXPOSURE</span><strong id="maxPosition">—</strong><p>50% of current closing equity</p></article>
+      <article><span>03 / STARTING RISK</span><strong id="tradeRisk">—</strong><p>0.5% of current equity at full pilot</p></article>
+      <article><span>04 / KILL SWITCH</span><strong id="drawdownLimit">—</strong><p>5% below the account high-water mark</p></article>
+    </section>
+
+    <section class="compound-note">
+      <p class="eyebrow">Reinvestment rule</p>
+      <p><strong>Yesterday’s closing equity becomes today’s sizing base.</strong> Gains increase—and losses reduce—the next position automatically. We reinvest the account, but never expose the whole account: half-size uses 25% notional / 0.25% risk; full pilot uses 50% / 0.5%.</p>
     </section>
 
     <section class="section stages">
@@ -39,7 +44,7 @@
       <div class="stage-track">
         <article><b>01</b><div><span>PAPER</span><h3>20 sessions + 10 signals</h3><p>No capital at risk. Extend until both are satisfied. Pass only with positive net PnL, ≤10 bps average slippage, and drawdown below INR 300.</p></div></article>
         <article><b>02</b><div><span>HALF SIZE</span><h3>10 valid trades</h3><p>Maximum INR 2,500 position and INR 25 risk. Pass only with positive net PnL and ≤10 bps average slippage.</p></div></article>
-        <article><b>03</b><div><span>FULL PILOT</span><h3>INR 5,000 max</h3><p>One trade at a time. Stop for the day at −INR 100. Pause the entire pilot at −INR 500.</p></div></article>
+        <article><b>03</b><div><span>FULL PILOT</span><h3>50% of equity</h3><p>One trade at a time. Risk 0.5% of updated equity; pause at 5% below the account high-water mark.</p></div></article>
       </div>
     </section>
 
@@ -54,6 +59,23 @@
         <article><b>5</b><h3>Exit</h3><p>Close by 15:15 IST. Skip if fill is over 10 bps from open or spread exceeds 0.50%.</p></article>
       </div>
       <p class="warning">The stop, fill tolerance, stricter liquidity screen, and 15:15 exit are safety overlays that were not separately backtested. The paper gate tests this implementation gap.</p>
+    </section>
+
+    <section class="section operations">
+      <header><p class="eyebrow">31 August → 13 October 2026</p><h2>Your next 30 trading days</h2></header>
+      <div class="clock">
+        <article><time>08:45</time><p>Update equity, high-water mark, prior closes, restrictions, and short availability.</p></article>
+        <article><time>09:15</time><p>Calculate five gaps. Select the highest-ranked eligible ±1% signal.</p></article>
+        <article><time>09:16</time><p>Fill within 10 bps or skip. Place the 1% protective stop immediately.</p></article>
+        <article><time>15:15</time><p>Exit regardless of PnL. No fixed profit target and no overnight position.</p></article>
+        <article><time>15:40</time><p>Reconcile costs and set closing equity as tomorrow’s compounding base.</p></article>
+      </div>
+      <div class="calendar-head">
+        <p><span class="paper-dot"></span>Days 1–20 paper only</p><p><span class="live-dot"></span>Days 21–30 half-size only if the gate passed</p>
+        <a href="investment_plan_30_sessions.csv" download>Download calendar CSV →</a>
+      </div>
+      <div id="calendar" class="calendar"></div>
+      <p class="warning">There is deliberately no daily rupee-profit target. The tested strategy’s target is a timed 15:15 exit. Forcing a profit number would add an untested rule and encourage overtrading.</p>
     </section>
 
     <section class="section">
@@ -74,6 +96,7 @@
         <p>Position size is the smaller of the notional cap and the amount that keeps a 1% stop within the risk cap.</p>
       </div>
       <form onsubmit="return false">
+        <label>Current account equity<input id="accountEquity" type="number" min="1" step="0.01" value="10000"></label>
         <label>Entry price<input id="entryPrice" type="number" min="0.01" step="0.05" value="200"></label>
         <label>Live stage<select id="liveStage"><option value="half">Half-size validation</option><option value="full">Full pilot</option></select></label>
         <dl>
@@ -81,6 +104,8 @@
           <div><dt>Notional</dt><dd id="notional">—</dd></div>
           <div><dt>Planned risk</dt><dd id="plannedRisk">—</dd></div>
           <div><dt>Cash remaining</dt><dd id="cashRemaining">—</dd></div>
+          <div><dt>Daily loss ceiling</dt><dd id="dynamicDailyStop">—</dd></div>
+          <div><dt>5% pause distance</dt><dd id="dynamicPause">—</dd></div>
         </dl>
       </form>
     </section>
@@ -96,7 +121,7 @@
 
   <footer>
     <p>Research-derived pilot protocol—not personalized investment advice or an assurance of returns.</p>
-    <p><a href="https://www.sebi.gov.in/media-and-notifications/press-releases/jul-2024/sebi-study-finds-that-7-out-of-10-individual-intraday-traders-in-equity-cash-segment-make-losses_84948.html">SEBI intraday study ↗</a> · <a href="https://www.sebi.gov.in/legal/circulars/jan-2024/framework-for-short-selling_80448.html">SEBI short-selling framework ↗</a></p>
+    <p><a href="https://www.sebi.gov.in/media-and-notifications/press-releases/jul-2024/sebi-study-finds-that-7-out-of-10-individual-intraday-traders-in-equity-cash-segment-make-losses_84948.html">SEBI intraday study ↗</a> · <a href="https://nsearchives.nseindia.com/content/circulars/CMTR71775.pdf">NSE 2026 calendar ↗</a> · <a href="https://www.nseindia.com/static/market-data/market-timings">NSE timings ↗</a></p>
   </footer>
   <script src="investment-plan-data.js"></script>
   <script src="investment-plan-app.js"></script>
