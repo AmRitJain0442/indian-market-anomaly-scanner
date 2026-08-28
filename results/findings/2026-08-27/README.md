@@ -54,6 +54,14 @@ All **34,476 stock-strategy pairs** are ranked in the [complete combination repo
 
 The top comparable pair is **VHLTD × gap_fade_050** (overall rank 13, score 98.5): INR 3,626,746 profit and INR 3,726,746 ending value on INR 100,000 initial investment. “Comparable” requires ≥95% history, OK liquidity, and ≥20 trades.
 
+## INR 10,000 controlled pilot
+
+The [complete INR 10,000 plan](INVESTMENT_PLAN_10000.md) converts the strongest broad finding into a gated execution experiment: at least 20 paper sessions and 10 valid signals, ten half-size live signals only after the paper gate passes, then a maximum INR 5,000 full-pilot position. Planned risk is INR 50 per trade, the daily loss ceiling is INR 100, and the cumulative pause threshold is INR 500.
+
+The plan uses a stricter five-name `gap_fade_100` watchlist. Every candidate has ≥99% history, ≥50 trades, ≥INR 5 crore median daily traded value, no detected discontinuity, at most two circuit-like sessions, a positive confidence floor, and independently positive historical long and short legs. The adjacent [watchlist CSV](investment_plan_10000_watchlist.csv) and [paper-trade log](pilot_trade_log_template.csv) support execution review.
+
+This is a research-to-paper-trading protocol—not a recommendation to immediately deploy the INR 10,000. The protective stop, fill tolerance, stricter screen, and 15:15 exit were not separately backtested and must pass the paper gate.
+
 ## Main observations
 
 - At the baseline 10 bps per side, only **gap_fade_050, gap_fade_100, close_to_open** had a positive median stock PnL.

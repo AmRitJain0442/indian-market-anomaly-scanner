@@ -1,0 +1,1 @@
+session_date,symbol,watchlist_rank,prior_close,opening_price,gap_pct,side,planned_entry,actual_entry,entry_slippage_bps,quantity,stop_price,exit_deadline,actual_exit,gross_pnl,brokerage,taxes_fees,net_pnl,short_available,order_rejected,rule_breach,skip_reason,notes,running_pilot_pnl
