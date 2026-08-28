@@ -13,5 +13,5 @@ data/processed/**
 # Generated research outputs. Curated findings are committed separately.
 results/**
 !results/.gitkeep
+!results/findings/
 !results/findings/**
-

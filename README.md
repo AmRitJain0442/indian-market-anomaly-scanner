@@ -23,7 +23,7 @@ The command writes normalized Parquet data under `data/processed/` and complete 
 
 ## Scope and caveats
 
-- Universe: NSE main-board ordinary equities identified from daily exchange files (`INE` ISINs in `EQ`, `BE`, or `BZ` series). SME, ETFs, debt, REITs/InvITs, preference shares, and warrants are excluded by default.
+- Universe: NSE main-board ordinary equities identified from daily exchange files (`INE` ISINs in `EQ`, `BE`, or `BZ` series), excluding temporary rights entitlements (`*-RE`, `*-RE1`, etc.). SME, ETFs, debt, REITs/InvITs, preference shares, and warrants are excluded by default.
 - Identity: ISIN is the stable grouping key, with the latest symbol retained for display.
 - Survivorship: the universe is the union of securities present in every downloaded daily file, including new listings, disappeared symbols, and suspended names.
 - Corporate actions: raw close-to-close discontinuities above 30% are flagged and the affected observations are not treated as strategy returns. This is conservative detection, not a fully adjusted-price service.
@@ -49,4 +49,3 @@ The first full-market set follows the brief: close-to-next-open, open-to-close, 
 ## Data provenance
 
 Market data comes from NSE's official daily report archive. UDiFF bhavcopies are used from 8 July 2024 onward and legacy CM bhavcopies before that date. The downloader caches each ZIP and records SHA-256 hashes in a manifest.
-

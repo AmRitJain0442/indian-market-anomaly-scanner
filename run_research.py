@@ -69,7 +69,7 @@ def _metadata(
         "one_way_cost_bps": config.one_way_cost_bps,
         "cost_model": "symmetric fixed bps per side; every active signal is a round trip",
         "cost_sensitivity_bps": list(config.cost_sensitivity_bps),
-        "universe_definition": "historical NSE ordinary equities; INE ISIN and EQ/BE/BZ series",
+        "universe_definition": "historical NSE ordinary equities; INE ISIN and EQ/BE/BZ series; rights entitlements excluded",
         "ordinary_equity_series": list(config.ordinary_equity_series),
         "include_sme": config.include_sme,
         "number_of_symbols": int(master["isin"].nunique()),
@@ -172,4 +172,3 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s %(message)s",
     )
     run(arguments)
-

@@ -111,7 +111,9 @@ def parse_bhavcopy(path: Path, config: ResearchConfig) -> pd.DataFrame:
 
     ordinary = frame["isin"].str.startswith("INE", na=False)
     allowed_series = frame["series"].isin(config.ordinary_equity_series)
-    return frame.loc[ordinary & allowed_series].reset_index(drop=True)
+    # Rights entitlements temporarily trade in EQ with an INE ISIN but are not shares.
+    rights_entitlement = frame["symbol"].str.contains(r"-RE\d*$", regex=True, na=False)
+    return frame.loc[ordinary & allowed_series & ~rights_entitlement].reset_index(drop=True)
 
 
 def validate_market_data(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:

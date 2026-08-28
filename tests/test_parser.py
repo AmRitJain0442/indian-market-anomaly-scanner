@@ -39,6 +39,21 @@ def test_legacy_parser_filters_to_ordinary_equities(tmp_path):
                 "TOTALTRADES": 5,
                 "ISIN": "INF000000001",
             },
+            {
+                "SYMBOL": "ISSUER-RE1",
+                "SERIES": "EQ",
+                "OPEN": 5,
+                "HIGH": 6,
+                "LOW": 4,
+                "CLOSE": 5,
+                "LAST": 5,
+                "PREVCLOSE": 5,
+                "TOTTRDQTY": 500,
+                "TOTTRDVAL": 2500,
+                "TIMESTAMP": "05-JUL-2024",
+                "TOTALTRADES": 10,
+                "ISIN": "INE000000002",
+            },
         ]
     )
     csv_path = tmp_path / "sample.csv"
@@ -77,4 +92,3 @@ def test_validation_flags_extreme_return_without_deleting_it():
     assert len(validated) == 1
     assert bool(validated.iloc[0]["corporate_action_flag"])
     assert report["extreme_discontinuity_rows"] == 1
-
