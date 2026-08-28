@@ -89,7 +89,8 @@ def parse_bhavcopy(path: Path, config: ResearchConfig) -> pd.DataFrame:
     frame = frame[NORMALIZED_COLUMNS].copy()
     frame["company_name"] = frame["company_name"].fillna(frame["symbol"])
     frame["instrument_type"] = frame["instrument_type"].fillna("STK")
-    frame["date"] = pd.to_datetime(frame["date"], dayfirst=True, errors="coerce")
+    date_format = "%Y-%m-%d" if mapping is UDIFF_MAP else "%d-%b-%Y"
+    frame["date"] = pd.to_datetime(frame["date"], format=date_format, errors="coerce")
     for column in (
         "open",
         "high",
@@ -161,4 +162,3 @@ def build_market_dataset(
         json.dumps(report, indent=2), encoding="utf-8"
     )
     return market, report
-
