@@ -107,6 +107,10 @@ class BacktestEngine:
         ew["net_equity"] = self.config.initial_capital * (1.0 + ew["net_return"]).cumprod()
         equal_weight_pnl = float(ew["net_equity"].iloc[-1] - self.config.initial_capital)
         summary = breadth_summary(metrics, equal_weight_pnl)
+        for bps in self.config.cost_sensitivity_bps:
+            column = f"pnl_{int(bps)}bps"
+            summary[f"pct_profitable_{int(bps)}bps"] = float(metrics[column].gt(0).mean())
+            summary[f"median_pnl_{int(bps)}bps"] = float(metrics[column].median())
 
         curve_path = self.curve_dir / f"{strategy.name}.parquet"
         curve_columns = [
@@ -132,4 +136,3 @@ class BacktestEngine:
         trade_path = self.trade_dir / f"{strategy.name}.parquet"
         trades[trade_columns].to_parquet(trade_path, index=False)
         return StrategyRun(strategy, ranking, summary, curve_path, trade_path, ew)
-
