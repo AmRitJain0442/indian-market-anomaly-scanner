@@ -14,6 +14,12 @@ import pandas as pd
 
 from src.backtest.combination_ranking import COMBINATION_PILLARS
 
+
+def _report_money(value: float) -> str:
+    if abs(value) >= 1_000_000_000_000:
+        return f"INR {value:.3e}"
+    return f"INR {value:,.0f}"
+
 COLORS = {
     "ROBUST POSITIVE": "#68d391",
     "BROAD POSITIVE": "#e6ba62",
@@ -133,6 +139,9 @@ def write_combination_gallery(
         shutil.copy2(assets / filename, gallery_dir / filename)
     payload = {
         "count": len(ranked),
+        "stock_count": int(ranked["isin"].nunique()),
+        "strategy_count": int(ranked["strategy"].nunique()),
+        "session_count": int(ranked["sessions_available"].max()),
         "initial_capital": initial_capital,
         "method": "Five-pillar cross-combination percentile score",
         "pillars": [
@@ -167,8 +176,8 @@ def write_combination_report(ranked: pd.DataFrame, output: Path, initial_capital
     for row in ranked.head(25).itertuples(index=False):
         lines.append(
             f"| {row.combination_rank} | {row.symbol} | {row.strategy} | {row.combination_score:.1f} | "
-            f"INR {initial_capital:,.0f} | INR {row.net_pnl:,.0f} | INR {initial_capital + row.net_pnl:,.0f} | "
-            f"{row.sharpe:.2f} | INR {row.pnl_30bps:,.0f} | {row.evidence_tier} ({row.positive_pillars}/5) | {row.sample_tier} |"
+            f"{_report_money(initial_capital)} | {_report_money(row.net_pnl)} | {_report_money(initial_capital + row.net_pnl)} | "
+            f"{row.sharpe:.2f} | {_report_money(row.pnl_30bps)} | {row.evidence_tier} ({row.positive_pillars}/5) | {row.sample_tier} |"
         )
     lines.extend(
         [
@@ -182,8 +191,8 @@ def write_combination_report(ranked: pd.DataFrame, output: Path, initial_capital
     for row in ranked[ranked["sample_tier"].eq("COMPARABLE")].head(25).itertuples(index=False):
         lines.append(
             f"| {row.comparable_rank} | {row.combination_rank} | {row.symbol} | {row.strategy} | "
-            f"{row.combination_score:.1f} | INR {initial_capital:,.0f} | INR {row.net_pnl:,.0f} | "
-            f"INR {initial_capital + row.net_pnl:,.0f} | {row.sharpe:.2f} | INR {row.pnl_30bps:,.0f} |"
+            f"{row.combination_score:.1f} | {_report_money(initial_capital)} | {_report_money(row.net_pnl)} | "
+            f"{_report_money(initial_capital + row.net_pnl)} | {row.sharpe:.2f} | {_report_money(row.pnl_30bps)} |"
         )
     lines.extend(
         [

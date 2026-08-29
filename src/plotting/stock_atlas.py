@@ -69,6 +69,8 @@ def _fonts() -> dict[str, ImageFont.FreeTypeFont]:
 def _compact_money(value: float) -> str:
     sign = "+" if value >= 0 else "-"
     amount = abs(value)
+    if amount >= 1_000_000_000_000:
+        return f"{sign}INR {amount:.1e}"
     if amount >= 10_000_000:
         return f"{sign}INR {amount / 10_000_000:.1f}cr"
     if amount >= 100_000:
@@ -208,7 +210,9 @@ def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
                 .ffill(axis=1)
                 .fillna(float(metadata["initial_capital"]))
             )
-            equity[strategy] = matrix.to_numpy(dtype=np.float32)
+            # Decade-long theoretical compounding can exceed float32 even when
+            # the underlying daily returns remain finite. Preserve every curve.
+            equity[strategy] = matrix.to_numpy(dtype=np.float64)
         else:
             if len(curve) % evaluation_sessions:
                 raise ValueError(f"{strategy} curve rows do not align to the evaluation window")
@@ -395,7 +399,7 @@ def generate_stock_gallery(
         from src.plotting.collective_ranking import write_gallery_ranking
 
         collective = rank_strategies_collectively(pd.read_csv(summary_path))
-        write_gallery_ranking(collective, output_dir)
+        write_gallery_ranking(collective, output_dir, len(dataset.dates), len(dataset.records))
     combination_path = config.results_dir / "strategy_results" / "all_stock_strategy_results.csv"
     if combination_path.exists():
         from src.backtest.combination_ranking import rank_stock_strategy_combinations

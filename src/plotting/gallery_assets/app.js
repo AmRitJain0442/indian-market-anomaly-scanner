@@ -12,14 +12,17 @@
 
   $("chartCount").textContent = manifest.chart_count.toLocaleString();
   const isDecade = manifest.analysis_namespace === "ten_year";
+  const evaluationSessions = manifest.evaluation_sessions ?? 252;
+  const initialCapital = manifest.initial_capital ?? 100000;
   $("windowLabel").textContent = isDecade
-    ? `${manifest.evaluation_sessions.toLocaleString()} sessions · 10-year research archive`
-    : `${manifest.evaluation_sessions.toLocaleString()}-session research archive`;
+    ? `${evaluationSessions.toLocaleString()} sessions · 10-year research archive`
+    : `${evaluationSessions.toLocaleString()}-session research archive`;
   $("windowSwitch").textContent = isDecade ? "252-session analysis →" : "10-year analysis →";
   $("windowSwitch").href = isDecade
     ? "../../stock_gallery/index.html"
     : "../ten_year/stock_gallery/index.html";
-  $("methodLine").textContent = `${manifest.strategy_count} strategies · INR ${manifest.initial_capital.toLocaleString("en-IN")} initial capital · 10 bps per side`;
+  if (isDecade) $("planLink").href = "../../stock_gallery/investment-plan.html";
+  $("methodLine").textContent = `${manifest.strategy_count} strategies · INR ${initialCapital.toLocaleString("en-IN")} initial capital · 10 bps per side`;
 
   function matchesFilter(stock) {
     if (filter === "liquid") return stock.liquidity === "OK";

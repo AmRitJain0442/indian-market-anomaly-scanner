@@ -32,7 +32,12 @@ def main() -> None:
     chart_path = output_dir / "collective_strategy_ranking.png"
     ranked.to_csv(csv_path, index=False)
     plot_collective_ranking(ranked, chart_path)
-    write_gallery_ranking(ranked, config.results_dir / "stock_gallery")
+    write_gallery_ranking(
+        ranked,
+        config.results_dir / "stock_gallery",
+        int(metadata["evaluation_sessions"]),
+        int(metadata["number_of_symbols"]),
+    )
 
     findings = config.results_dir / "findings" / metadata["evaluation_end"]
     shutil.copy2(csv_path, findings / csv_path.name)

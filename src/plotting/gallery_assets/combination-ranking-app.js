@@ -5,14 +5,19 @@
   let filtered = rows;
   let page = 0;
   const $ = (id) => document.getElementById(id);
-  const money = (value) => `${value >= 0 ? "+" : "−"}INR ${Math.abs(value).toLocaleString(undefined, {maximumFractionDigits: 0})}`;
-  const plainMoney = (value) => `INR ${value.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+  const amount = (value) => Math.abs(value) >= 1e12
+    ? Math.abs(value).toExponential(2)
+    : Math.abs(value).toLocaleString(undefined, {maximumFractionDigits: 0});
+  const money = (value) => `${value >= 0 ? "+" : "−"}INR ${amount(value)}`;
+  const plainMoney = (value) => `${value < 0 ? "−" : ""}INR ${amount(value)}`;
   const tone = (value) => value >= 0 ? "positive" : "negative";
   const tierTone = (tier) => tier.includes("POSITIVE") ? "positive" : tier.includes("NEGATIVE") ? "negative" : "";
   const strategyName = (value) => value.replaceAll("_", " ").toUpperCase();
 
   $("pairCount").textContent = dataset.count.toLocaleString();
   $("heroInvestment").textContent = plainMoney(dataset.initial_capital);
+  $("tapeSummary").textContent = `${dataset.count.toLocaleString()} PAIRS / ${dataset.stock_count.toLocaleString()} STOCKS / ${dataset.strategy_count} STRATEGIES / ${dataset.session_count.toLocaleString()} SESSIONS`;
+  if (dataset.session_count > 1000) $("planLink").href = "../../stock_gallery/investment-plan.html";
   [...new Set(rows.map((row) => row.st))].sort().forEach((strategy) => {
     const option = document.createElement("option");
     option.value = strategy;

@@ -1,6 +1,14 @@
 (() => {
   const data = window.STRATEGY_RANKING;
-  const money = (value) => `${value >= 0 ? "+" : "−"}INR ${Math.abs(value).toLocaleString(undefined,{maximumFractionDigits:0})}`;
+  document.getElementById("windowSummary").textContent = `Market-wide evidence ledger · ${data.stock_count.toLocaleString()} stocks · ${data.session_count.toLocaleString()} completed sessions`;
+  if (data.session_count > 1000) document.getElementById("planLink").href = "../../stock_gallery/investment-plan.html";
+  const money = (value) => {
+    const absolute = Math.abs(value);
+    const amount = absolute >= 1e12
+      ? absolute.toExponential(2)
+      : absolute.toLocaleString(undefined, {maximumFractionDigits: 0});
+    return `${value >= 0 ? "+" : "−"}INR ${amount}`;
+  };
   const pct = (value) => `${(value * 100).toFixed(1)}%`;
   const tone = (value) => value >= 0 ? "positive" : "negative";
   const tierTone = (tier) => tier.includes("POSITIVE") ? "positive" : tier.includes("NEGATIVE") ? "negative" : "";
@@ -17,4 +25,3 @@
     body.appendChild(row);
   });
 })();
-

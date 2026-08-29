@@ -119,7 +119,12 @@ def ranking_records(ranked: pd.DataFrame) -> list[dict]:
     return records
 
 
-def write_gallery_ranking(ranked: pd.DataFrame, gallery_dir: Path) -> None:
+def write_gallery_ranking(
+    ranked: pd.DataFrame,
+    gallery_dir: Path,
+    session_count: int | None = None,
+    stock_count: int | None = None,
+) -> None:
     assets = Path(__file__).resolve().parent / "gallery_assets"
     for filename in (
         "index.html",
@@ -132,6 +137,8 @@ def write_gallery_ranking(ranked: pd.DataFrame, gallery_dir: Path) -> None:
         shutil.copy2(assets / filename, gallery_dir / filename)
     data = {
         "method": "Equal-weight average of five cross-strategy percentile scores",
+        "session_count": session_count or 252,
+        "stock_count": stock_count or int(ranked["stocks_tested"].max()),
         "weights": {label: 0.20 for label in COLLECTIVE_PILLARS.values()},
         "strategies": ranking_records(ranked),
     }
