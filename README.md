@@ -8,6 +8,22 @@ The source brief is preserved in [`indian_market_anomaly_scanner_252d.md`](india
 
 The committed full-market snapshot through 27 August 2026 is in [`results/findings/2026-08-27/`](results/findings/2026-08-27/README.md). It covers 2,652 historical ordinary equities over 252 completed sessions after a 550-session data build. The snapshot includes the strategy overview, raw and liquid/comparable leaders, bottom rankings, cost sensitivity, and selected figures.
 
+## Executed 10-year section
+
+The separate decade study is in [`results/findings/2026-08-27-ten-year/`](results/findings/2026-08-27-ten-year/README.md). It covers the exact trailing calendar decade from 29 August 2016 through 27 August 2026: **2,468 completed sessions**, **3,328 historical ordinary equities**, **13 strategies**, and **43,264 stock-strategy combinations**. The searchable local atlas contains one image per stock and all 43,264 strategy graphs.
+
+Run the isolated decade pipeline without overwriting the 252-session artifacts:
+
+```bash
+python run_research.py --start-date 2016-08-28 --end-date 2026-08-27 --namespace ten_year --sparse-curves
+python generate_stock_gallery.py --namespace ten_year --workers 8
+python generate_strategy_ranking.py --namespace ten_year
+python generate_combination_ranking.py --namespace ten_year
+python publish_decade_findings.py
+```
+
+Open `results/ten_year/stock_gallery/index.html`, or use the **10-year analysis** switch in the standard gallery. The decade’s collective leaders are `gap_fade_050`, `gap_fade_100`, and `close_to_open`. These remain in-sample research results; the very large theoretical compounded gap-fade values require special caution around short availability, liquidity, circuits, slippage, and point-in-time tradability.
+
 ## Quick start
 
 ```bash

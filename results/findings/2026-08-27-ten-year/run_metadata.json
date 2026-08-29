@@ -1,0 +1,138 @@
+{
+  "scanner_version": "0.1.0",
+  "git_commit": "3f6e86fab64ab00dd1b2ef30ef3d613240e973c7",
+  "generated_at_utc": "2026-08-29T17:10:54.789192+00:00",
+  "evaluation_sessions": 2468,
+  "evaluation_start": "2016-08-29",
+  "evaluation_end": "2026-08-27",
+  "analysis_namespace": "ten_year",
+  "curve_storage": "sparse_observed_sessions",
+  "initial_capital": 100000.0,
+  "one_way_cost_bps": 10.0,
+  "cost_model": "symmetric fixed bps per side; every active signal is a round trip",
+  "cost_sensitivity_bps": [
+    0.0,
+    5.0,
+    10.0,
+    20.0,
+    30.0
+  ],
+  "universe_definition": "historical NSE ordinary equities; INE ISIN and EQ/BE/BZ series; rights entitlements excluded",
+  "ordinary_equity_series": [
+    "EQ",
+    "BE",
+    "BZ"
+  ],
+  "include_sme": false,
+  "number_of_symbols": 3328,
+  "data_source": "National Stock Exchange of India official daily report archives",
+  "strategies": [
+    {
+      "name": "close_to_open",
+      "parameters": {},
+      "execution_class": "LONG_ONLY"
+    },
+    {
+      "name": "open_to_close",
+      "parameters": {},
+      "execution_class": "LONG_ONLY"
+    },
+    {
+      "name": "gap_fade_050",
+      "parameters": {
+        "gap_threshold": 0.005
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "gap_continuation_050",
+      "parameters": {
+        "gap_threshold": 0.005
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "gap_fade_100",
+      "parameters": {
+        "gap_threshold": 0.01
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "gap_continuation_100",
+      "parameters": {
+        "gap_threshold": 0.01
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "reversal_1d",
+      "parameters": {
+        "move_threshold": 0.02,
+        "signal_feature": "previous_cc_signal"
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "momentum_1d",
+      "parameters": {
+        "move_threshold": 0.02,
+        "signal_feature": "previous_cc_signal"
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "reversal_5d",
+      "parameters": {
+        "move_threshold": 0.05,
+        "signal_feature": "previous_5d_signal"
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "momentum_5d",
+      "parameters": {
+        "move_threshold": 0.05,
+        "signal_feature": "previous_5d_signal"
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "turn_of_month",
+      "parameters": {
+        "days": 3
+      },
+      "execution_class": "LONG_ONLY"
+    },
+    {
+      "name": "volume_continuation",
+      "parameters": {
+        "volume_ratio": 2.0,
+        "move_threshold": 0.02
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    },
+    {
+      "name": "volume_reversal",
+      "parameters": {
+        "volume_ratio": 2.0,
+        "move_threshold": 0.02
+      },
+      "execution_class": "INTRADAY_SHORT_ALLOWED_RESEARCH"
+    }
+  ],
+  "validation": {
+    "input_rows": 4416181,
+    "invalid_ohlcv_rows": 0,
+    "duplicate_date_isin_rows": 0,
+    "extreme_discontinuity_rows": 2601,
+    "circuit_like_rows": 114802,
+    "output_rows": 4416181
+  },
+  "runtime": {
+    "python": "3.10.0",
+    "pandas": "2.3.0",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3"
+  }
+}

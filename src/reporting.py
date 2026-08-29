@@ -12,6 +12,8 @@ from src.backtest.strategy_ranking import rank_strategies_collectively
 
 
 def _money(value: float) -> str:
+    if abs(value) >= 1_000_000_000_000:
+        return f"INR {value:.3e}"
     return f"INR {value:,.0f}"
 
 
@@ -138,6 +140,19 @@ def write_findings(
                 else:
                     lines.append(f"- {label} for **{share:.1%}** of securities.")
         lines.append("")
+
+    if int(metadata["evaluation_sessions"]) > 1000:
+        lines.extend(
+            [
+                "## Decade interpretation guardrails",
+                "",
+                "- Compounding magnifies small model errors over thousands of sessions. Extremely large values are mathematical backtest outputs, not executable wealth forecasts.",
+                "- Gap-fade results include theoretical intraday shorts. Borrow availability, broker restrictions, price bands, auction risk, impact, taxes, and slippage are not fully modeled.",
+                "- The `OK` liquidity threshold is a screening floor, not proof that the displayed position could have been filled throughout the decade.",
+                "- The entire window is in-sample. A walk-forward, point-in-time tradability study is required before using the ranking for capital allocation.",
+                "",
+            ]
+        )
 
     lines.extend(["## Raw all-stock leaders by net PnL", ""])
     leaders = top.groupby("strategy").head(3)
