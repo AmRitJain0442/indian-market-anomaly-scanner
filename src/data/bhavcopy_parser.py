@@ -89,8 +89,17 @@ def parse_bhavcopy(path: Path, config: ResearchConfig) -> pd.DataFrame:
     frame = frame[NORMALIZED_COLUMNS].copy()
     frame["company_name"] = frame["company_name"].fillna(frame["symbol"])
     frame["instrument_type"] = frame["instrument_type"].fillna("STK")
-    date_format = "%Y-%m-%d" if mapping is UDIFF_MAP else "%d-%b-%Y"
-    frame["date"] = pd.to_datetime(frame["date"], format=date_format, errors="coerce")
+    if mapping is UDIFF_MAP:
+        frame["date"] = pd.to_datetime(frame["date"], format="%Y-%m-%d", errors="coerce")
+    else:
+        parsed = pd.to_datetime(frame["date"], format="%d-%b-%Y", errors="coerce")
+        two_digit_year = parsed.isna()
+        parsed.loc[two_digit_year] = pd.to_datetime(
+            frame.loc[two_digit_year, "date"],
+            format="%d-%b-%y",
+            errors="coerce",
+        )
+        frame["date"] = parsed
     for column in (
         "open",
         "high",

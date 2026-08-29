@@ -92,3 +92,34 @@ def test_validation_flags_extreme_return_without_deleting_it():
     assert len(validated) == 1
     assert bool(validated.iloc[0]["corporate_action_flag"])
     assert report["extreme_discontinuity_rows"] == 1
+
+
+def test_legacy_parser_accepts_two_digit_year_used_by_nse_archive(tmp_path):
+    row = pd.DataFrame(
+        [
+            {
+                "SYMBOL": "ARCHIVE",
+                "SERIES": "EQ",
+                "OPEN": 100,
+                "HIGH": 102,
+                "LOW": 99,
+                "CLOSE": 101,
+                "LAST": 101,
+                "PREVCLOSE": 100,
+                "TOTTRDQTY": 1000,
+                "TOTTRDVAL": 101000,
+                "TIMESTAMP": "13-Jul-20",
+                "TOTALTRADES": 50,
+                "ISIN": "INE000000099",
+            }
+        ]
+    )
+    csv_path = tmp_path / "legacy.csv"
+    row.to_csv(csv_path, index=False)
+    zip_path = tmp_path / "legacy.zip"
+    with ZipFile(zip_path, "w", ZIP_DEFLATED) as archive:
+        archive.write(csv_path, arcname="legacy.csv")
+
+    parsed = parse_bhavcopy(zip_path, CONFIG)
+
+    assert parsed.iloc[0]["date"] == pd.Timestamp("2020-07-13")
