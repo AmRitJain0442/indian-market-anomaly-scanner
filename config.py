@@ -7,6 +7,8 @@ from pathlib import Path
 @dataclass(frozen=True)
 class ResearchConfig:
     project_root: Path = Path(__file__).resolve().parent
+    artifact_namespace: str | None = None
+    sparse_curve_storage: bool = False
     evaluation_sessions: int = 252
     raw_history_target: int = 550
     initial_capital: float = 100_000.0
@@ -41,8 +43,15 @@ class ResearchConfig:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "raw_dir", self.project_root / "data" / "raw")
-        object.__setattr__(self, "processed_dir", self.project_root / "data" / "processed")
-        object.__setattr__(self, "results_dir", self.project_root / "results")
+        processed = self.project_root / "data" / "processed"
+        results = self.project_root / "results"
+        if self.artifact_namespace:
+            if Path(self.artifact_namespace).name != self.artifact_namespace:
+                raise ValueError("artifact_namespace must be a single directory name")
+            processed /= self.artifact_namespace
+            results /= self.artifact_namespace
+        object.__setattr__(self, "processed_dir", processed)
+        object.__setattr__(self, "results_dir", results)
 
 
 CONFIG = ResearchConfig()

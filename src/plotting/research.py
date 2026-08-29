@@ -55,7 +55,12 @@ def plot_strategy_suite(
     ax.axvline(0, color="black", linewidth=1)
     ax.axvline(ranking["net_pnl"].median(), color="#d67b22", linestyle="--", label="Median")
     ax.axvline(ranking["net_pnl"].mean(), color="#8c3b6f", linestyle=":", label="Mean")
-    ax.set(title=f"{strategy}: 252-session net PnL distribution", xlabel="Net PnL", ylabel="Stocks")
+    session_count = int(pd.DatetimeIndex(curve["date"]).nunique())
+    ax.set(
+        title=f"{strategy}: {session_count:,}-session net PnL distribution",
+        xlabel="Net PnL",
+        ylabel="Stocks",
+    )
     ax.xaxis.set_major_formatter(RUPEES)
     ax.legend(frameon=False)
     path = output_dir / f"{strategy}_distribution.png"
@@ -143,4 +148,3 @@ def plot_strategy_breadth(summary: pd.DataFrame, output_dir: Path) -> list[Path]
     _save(fig, path)
     paths.append(path)
     return paths
-

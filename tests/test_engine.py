@@ -61,3 +61,51 @@ def test_engine_ranks_net_pnl_and_writes_complete_outputs(tmp_path):
     assert len(curves) == 20
     assert set(curves["missing_session_flag"]) == {False}
 
+
+def test_sparse_curve_storage_preserves_metrics_without_dense_output(tmp_path):
+    dates = pd.bdate_range("2026-01-01", periods=8)
+    rows = []
+    for index, day in enumerate(dates):
+        if index == 3:
+            continue
+        rows.append(
+            {
+                "date": day,
+                "symbol": "SPARSE",
+                "isin": "INE000000003",
+                "company_name": "Sparse Ltd",
+                "series": "EQ",
+                "open": 100.0,
+                "high": 102.0,
+                "low": 99.0,
+                "close": 101.0,
+                "last_price": 101.0,
+                "previous_close": 100.0,
+                "volume": 10000,
+                "traded_value": 1_000_000,
+                "number_of_trades": 100,
+                "delivery_quantity": None,
+                "delivery_percentage": None,
+                "instrument_type": "STK",
+                "raw_close_return": 0.01,
+                "corporate_action_flag": False,
+                "circuit_like_flag": False,
+            }
+        )
+    market = pd.DataFrame(rows)
+    config = replace(
+        CONFIG,
+        project_root=tmp_path,
+        evaluation_sessions=7,
+        sparse_curve_storage=True,
+    )
+    config.processed_dir.mkdir(parents=True)
+    evaluation_dates = pd.DatetimeIndex(dates)
+    master = build_security_master(market, evaluation_dates, config)
+    engine = BacktestEngine(add_return_features(market), master, evaluation_dates, config)
+    result = engine.run(OpenToClose("open_to_close", "LONG_ONLY"))
+
+    curves = pd.read_parquet(result.curve_path)
+    assert len(curves) == 7
+    assert result.ranking.iloc[0]["sessions_available"] == 7
+    assert result.ranking.iloc[0]["exposure_pct"] == 7 / 8

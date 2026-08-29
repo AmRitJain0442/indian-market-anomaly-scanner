@@ -101,14 +101,16 @@ def write_findings(
     )
 
     positive_median = summary.loc[summary["median_net_pnl"].gt(0), "strategy"].tolist()
-    gap_100 = summary.loc[summary["strategy"].eq("gap_fade_100")].iloc[0]
+    broadest = summary.sort_values("pct_profitable", ascending=False).iloc[0]
+    resilient = summary.sort_values("pct_profitable_30bps", ascending=False).iloc[0]
     overnight = summary.loc[summary["strategy"].eq("close_to_open")].iloc[0]
+    positive_text = ", ".join(positive_median) if positive_median else "no strategy"
     lines.extend([
         "## Main observations",
         "",
-        f"- At the baseline 10 bps per side, only **{', '.join(positive_median)}** had a positive median stock PnL.",
-        f"- The broadest result was **gap_fade_100**: {gap_100['pct_profitable']:.1%} of stocks were profitable and its equal-weight PnL was {_money(gap_100['equal_weight_pnl'])}.",
-        f"- The 1% gap fade was the only positive-median effect that retained majority breadth at 30 bps per side ({gap_100['pct_profitable_30bps']:.1%}).",
+        f"- At the baseline 10 bps per side, **{positive_text}** had a positive median stock PnL.",
+        f"- The broadest result was **{broadest['strategy']}**: {broadest['pct_profitable']:.1%} of stocks were profitable and its equal-weight PnL was {_money(broadest['equal_weight_pnl'])}.",
+        f"- The strongest breadth at 30 bps per side was **{resilient['strategy']}** ({resilient['pct_profitable_30bps']:.1%}).",
         f"- Close-to-open breadth fell from {overnight['pct_profitable_0bps']:.1%} at zero cost to {overnight['pct_profitable_10bps']:.1%} at 10 bps and {overnight['pct_profitable_30bps']:.1%} at 30 bps, so its result is cost-sensitive.",
         "- Large raw leaders often carry low-liquidity or circuit-like-session flags. Treat the liquid/comparable table below as the more inspectable shortlist, not as an execution claim.",
         "",
@@ -153,7 +155,12 @@ def write_findings(
         "## Reproduction",
         "",
         "```bash",
-        f"python run_research.py --end-date {end_date}",
+        (
+            f"python run_research.py --start-date {metadata['evaluation_start']} "
+            f"--end-date {end_date} --namespace {metadata['analysis_namespace']} --sparse-curves"
+            if metadata.get("analysis_namespace") != "default"
+            else f"python run_research.py --end-date {end_date}"
+        ),
         "```",
         "",
         "The CSV files beside this report contain the complete compact overview and top/bottom ten rows for every strategy. Full rankings, curves, and trades are generated locally and excluded from Git because of their size.",

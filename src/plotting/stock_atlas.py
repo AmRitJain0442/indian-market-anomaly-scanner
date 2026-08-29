@@ -180,26 +180,48 @@ def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
     reference_isins: np.ndarray | None = None
     dates: pd.DatetimeIndex | None = None
 
+    sparse = metadata.get("curve_storage") == "sparse_observed_sessions"
     for strategy in strategies:
         curve = pd.read_parquet(
             config.results_dir / "equity_curves" / f"{strategy}.parquet",
             columns=["date", "isin", "net_equity"],
         ).sort_values(["isin", "date"])
-        if len(curve) % evaluation_sessions:
-            raise ValueError(f"{strategy} curve rows do not align to the evaluation window")
-        stock_count = len(curve) // evaluation_sessions
-        strategy_isins = curve["isin"].to_numpy()[::evaluation_sessions]
-        if reference_isins is None:
-            reference_isins = strategy_isins
-            dates = pd.DatetimeIndex(curve["date"].iloc[:evaluation_sessions])
-        elif not np.array_equal(reference_isins, strategy_isins):
-            raise ValueError(f"{strategy} security ordering differs from the other curves")
-        equity[strategy] = curve["net_equity"].to_numpy(dtype=np.float32).reshape(
-            stock_count, evaluation_sessions
-        )
         metrics[strategy] = pd.read_csv(
             config.results_dir / "rankings" / f"{strategy}.csv"
         ).set_index("isin")
+        if sparse:
+            strategy_isins = np.sort(metrics[strategy].index.astype(str).to_numpy())
+            if reference_isins is None:
+                reference_isins = strategy_isins
+                dates = pd.date_range(
+                    metadata["evaluation_start"],
+                    metadata["evaluation_end"],
+                    freq="D",
+                )
+                observed_dates = pd.DatetimeIndex(sorted(curve["date"].unique()))
+                dates = observed_dates
+            elif not np.array_equal(reference_isins, strategy_isins):
+                raise ValueError(f"{strategy} security ordering differs from the other curves")
+            matrix = (
+                curve.pivot(index="isin", columns="date", values="net_equity")
+                .reindex(index=reference_isins, columns=dates)
+                .ffill(axis=1)
+                .fillna(float(metadata["initial_capital"]))
+            )
+            equity[strategy] = matrix.to_numpy(dtype=np.float32)
+        else:
+            if len(curve) % evaluation_sessions:
+                raise ValueError(f"{strategy} curve rows do not align to the evaluation window")
+            stock_count = len(curve) // evaluation_sessions
+            strategy_isins = curve["isin"].to_numpy()[::evaluation_sessions]
+            if reference_isins is None:
+                reference_isins = strategy_isins
+                dates = pd.DatetimeIndex(curve["date"].iloc[:evaluation_sessions])
+            elif not np.array_equal(reference_isins, strategy_isins):
+                raise ValueError(f"{strategy} security ordering differs from the other curves")
+            equity[strategy] = curve["net_equity"].to_numpy(dtype=np.float32).reshape(
+                stock_count, evaluation_sessions
+            )
 
     assert reference_isins is not None and dates is not None
     first = metrics[strategies[0]]
@@ -276,7 +298,7 @@ def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path)
         boxes[13],
         "COVERAGE + LIQUIDITY",
         [
-            ("Sessions", f"{record.sessions_available}/252"),
+            ("Sessions", f"{record.sessions_available}/{len(dataset.dates)}"),
             ("Coverage", f"{record.coverage_ratio:.1%}"),
             ("Liquidity flag", record.liquidity_flag),
             ("Median value", _compact_money(record.median_daily_value).lstrip("+")),
@@ -340,7 +362,12 @@ def generate_stock_gallery(
                 print(f"Rendered {completed}/{len(records)} stock atlases", flush=True)
 
     manifest = {
-        "generated_from": "results/run_metadata.json",
+        "generated_from": str(config.results_dir / "run_metadata.json"),
+        "analysis_namespace": metadata_namespace(config),
+        "evaluation_start": dataset.dates.min().date().isoformat(),
+        "evaluation_end": dataset.dates.max().date().isoformat(),
+        "evaluation_sessions": len(dataset.dates),
+        "initial_capital": dataset.initial_capital,
         "stock_count": len(records),
         "strategy_count": len(dataset.strategies),
         "chart_count": len(records) * len(dataset.strategies),
@@ -377,3 +404,7 @@ def generate_stock_gallery(
         combinations = rank_stock_strategy_combinations(pd.read_csv(combination_path))
         write_combination_gallery(combinations, output_dir, dataset.initial_capital)
     return manifest
+
+
+def metadata_namespace(config: ResearchConfig) -> str:
+    return config.artifact_namespace or "default"

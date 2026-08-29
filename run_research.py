@@ -20,7 +20,7 @@ from src import __version__
 from src.backtest.engine import BacktestEngine
 from src.data.bhavcopy_parser import build_market_dataset
 from src.data.calendar import evaluation_window
-from src.data.nse_downloader import NSEDownloader
+from src.data.nse_downloader import NSEDownloader, latest_completed_candidate
 from src.data.universe import build_security_master
 from src.features.returns import add_return_features
 from src.plotting.research import plot_strategy_breadth, plot_strategy_suite
@@ -33,8 +33,19 @@ LOGGER = logging.getLogger("research")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--end-date", type=date.fromisoformat, help="latest session candidate (YYYY-MM-DD)")
+    parser.add_argument(
+        "--start-date",
+        type=date.fromisoformat,
+        help="inclusive calendar start; evaluates every completed session in the range",
+    )
     parser.add_argument("--history-sessions", type=int, default=CONFIG.raw_history_target)
     parser.add_argument("--evaluation-sessions", type=int, default=CONFIG.evaluation_sessions)
+    parser.add_argument("--namespace", help="write processed data and results to a separate subdirectory")
+    parser.add_argument(
+        "--sparse-curves",
+        action="store_true",
+        help="store only observed stock sessions (recommended for multi-year runs)",
+    )
     parser.add_argument("--no-download", action="store_true", help="reuse data/processed/equity_daily.parquet")
     parser.add_argument("--skip-plots", action="store_true")
     parser.add_argument("--strategies", nargs="*", help="optional subset of strategy names")
@@ -65,6 +76,8 @@ def _metadata(
         "evaluation_sessions": len(dates),
         "evaluation_start": dates.min().date().isoformat(),
         "evaluation_end": dates.max().date().isoformat(),
+        "analysis_namespace": config.artifact_namespace or "default",
+        "curve_storage": "sparse_observed_sessions" if config.sparse_curve_storage else "dense_calendar_grid",
         "initial_capital": config.initial_capital,
         "one_way_cost_bps": config.one_way_cost_bps,
         "cost_model": "symmetric fixed bps per side; every active signal is a round trip",
@@ -93,6 +106,8 @@ def run(args: argparse.Namespace) -> Path:
         CONFIG,
         evaluation_sessions=args.evaluation_sessions,
         raw_history_target=args.history_sessions,
+        artifact_namespace=args.namespace,
+        sparse_curve_storage=args.sparse_curves,
     )
     config.results_dir.mkdir(parents=True, exist_ok=True)
     if args.no_download:
@@ -100,12 +115,27 @@ def run(args: argparse.Namespace) -> Path:
         validation_path = config.processed_dir / "validation_report.json"
         validation = json.loads(validation_path.read_text(encoding="utf-8")) if validation_path.exists() else {}
     else:
-        LOGGER.info("Downloading %d official NSE sessions", config.raw_history_target)
-        sessions = NSEDownloader(config).collect_sessions(config.raw_history_target, args.end_date)
+        downloader = NSEDownloader(config)
+        if args.start_date:
+            end_date = args.end_date or latest_completed_candidate()
+            LOGGER.info("Downloading official NSE sessions from %s to %s", args.start_date, end_date)
+            sessions = downloader.collect_date_range(args.start_date, end_date)
+        else:
+            LOGGER.info("Downloading %d official NSE sessions", config.raw_history_target)
+            sessions = downloader.collect_sessions(config.raw_history_target, args.end_date)
         LOGGER.info("Parsing %d bhavcopies", len(sessions))
         market, validation = build_market_dataset(sessions, config)
 
-    dates = evaluation_window(market, config.evaluation_sessions)
+    if args.start_date:
+        end_date = pd.Timestamp(args.end_date or market["date"].max())
+        available = market.loc[
+            market["date"].between(pd.Timestamp(args.start_date), end_date), "date"
+        ]
+        dates = pd.DatetimeIndex(sorted(available.dropna().unique()))
+        if dates.empty:
+            raise ValueError("No processed sessions fall inside the requested date range")
+    else:
+        dates = evaluation_window(market, config.evaluation_sessions)
     LOGGER.info("Evaluation window: %s to %s", dates.min().date(), dates.max().date())
     features = add_return_features(market)
     master = build_security_master(market, dates, config)

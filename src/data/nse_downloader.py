@@ -179,6 +179,44 @@ class NSEDownloader:
         self.write_manifest(selected)
         return selected
 
+    def collect_date_range(
+        self,
+        start_date: date,
+        end_date: date,
+    ) -> list[DownloadedSession]:
+        """Download every available weekday session in an inclusive date range."""
+        if end_date < start_date:
+            raise ValueError("end_date must be on or after start_date")
+        candidates = []
+        cursor = start_date
+        while cursor <= end_date:
+            if cursor.weekday() < 5:
+                candidates.append(cursor)
+            cursor += timedelta(days=1)
+
+        found: dict[date, DownloadedSession] = {}
+        batch_size = max(self.config.download_workers * 3, 18)
+        for offset in range(0, len(candidates), batch_size):
+            batch = candidates[offset : offset + batch_size]
+            with ThreadPoolExecutor(max_workers=self.config.download_workers) as pool:
+                futures = {pool.submit(self.download_one, day): day for day in batch}
+                for future in as_completed(futures):
+                    result = future.result()
+                    if result is not None:
+                        found[result.session_date] = result
+            LOGGER.info(
+                "Discovered %d sessions across %s to %s",
+                len(found),
+                start_date,
+                end_date,
+            )
+
+        selected = sorted(found.values(), key=lambda item: item.session_date)
+        if not selected:
+            raise RuntimeError(f"No NSE sessions found from {start_date} to {end_date}")
+        self.write_manifest(selected)
+        return selected
+
     def write_manifest(self, sessions: list[DownloadedSession]) -> Path:
         manifest = {
             "source": "National Stock Exchange of India official archives",
@@ -193,6 +231,7 @@ class NSEDownloader:
                 for item in sessions
             ],
         }
-        path = self.config.raw_dir / "download_manifest.json"
+        suffix = f"_{self.config.artifact_namespace}" if self.config.artifact_namespace else ""
+        path = self.config.raw_dir / f"download_manifest{suffix}.json"
         path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         return path

@@ -55,7 +55,10 @@ class BacktestEngine:
             ["date", "isin", "ret_cc", "corporate_action_flag", "circuit_like_flag"]
         ].rename(columns={"ret_cc": "buy_hold_return"})
         generated = generated.merge(observed, on=["date", "isin"], how="left")
-        curve = self._calendar_grid().merge(generated, on=["isin", "date"], how="left")
+        if self.config.sparse_curve_storage:
+            curve = generated.copy()
+        else:
+            curve = self._calendar_grid().merge(generated, on=["isin", "date"], how="left")
         curve = curve.merge(self.master[["isin", "symbol"]], on="isin", how="left", suffixes=("", "_latest"))
         curve["symbol"] = curve["symbol"].fillna(curve["symbol_latest"])
         curve = curve.drop(columns="symbol_latest")
@@ -82,6 +85,17 @@ class BacktestEngine:
 
         metric_rows = []
         for isin, stock_curve in curve.groupby("isin", sort=False):
+            if self.config.sparse_curve_storage:
+                stock_curve = (
+                    pd.DataFrame({"date": self.dates})
+                    .merge(stock_curve, on="date", how="left")
+                    .assign(
+                        active=lambda frame: frame["active"].eq(True),
+                        net_return=lambda frame: frame["net_return"].fillna(0.0),
+                        gross_return=lambda frame: frame["gross_return"].fillna(0.0),
+                        buy_hold_return=lambda frame: frame["buy_hold_return"].fillna(0.0),
+                    )
+                )
             row = {"isin": isin, **calculate_metrics(
                 stock_curve,
                 self.config.initial_capital,

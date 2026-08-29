@@ -11,6 +11,15 @@
   const image = $("atlas");
 
   $("chartCount").textContent = manifest.chart_count.toLocaleString();
+  const isDecade = manifest.analysis_namespace === "ten_year";
+  $("windowLabel").textContent = isDecade
+    ? `${manifest.evaluation_sessions.toLocaleString()} sessions · 10-year research archive`
+    : `${manifest.evaluation_sessions.toLocaleString()}-session research archive`;
+  $("windowSwitch").textContent = isDecade ? "252-session analysis →" : "10-year analysis →";
+  $("windowSwitch").href = isDecade
+    ? "../../stock_gallery/index.html"
+    : "../ten_year/stock_gallery/index.html";
+  $("methodLine").textContent = `${manifest.strategy_count} strategies · INR ${manifest.initial_capital.toLocaleString("en-IN")} initial capital · 10 bps per side`;
 
   function matchesFilter(stock) {
     if (filter === "liquid") return stock.liquidity === "OK";
@@ -76,4 +85,3 @@
   const requestedIndex = visible.findIndex((stock) => stock.isin === requested);
   if (requestedIndex >= 0) select(requestedIndex);
 })();
-
