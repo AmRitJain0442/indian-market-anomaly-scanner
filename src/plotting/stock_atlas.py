@@ -407,6 +407,9 @@ def generate_stock_gallery(
 
         combinations = rank_stock_strategy_combinations(pd.read_csv(combination_path))
         write_combination_gallery(combinations, output_dir, dataset.initial_capital)
+    from src.plotting.research_guide import write_research_guide
+
+    write_research_guide(config, output_dir)
     return manifest
 
 

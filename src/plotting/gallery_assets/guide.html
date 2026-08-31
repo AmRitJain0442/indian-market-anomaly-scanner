@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research Guide | NSE Anomaly Atlas</title>
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a href="index.html">← Stock atlas</a>
+    <nav>
+      <a href="combination-ranking.html">Stock × strategy</a>
+      <a href="strategy-ranking.html">Strategy ranking</a>
+      <a class="active" href="#glossary">Glossary</a>
+    </nav>
+    <a id="windowSwitch" class="window-switch" href="#">Change window →</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Research field guide</p>
+        <h1>Read the evidence.<br><em>Then read the rank.</em></h1>
+      </div>
+      <aside>
+        <span id="windowBadge">Loading window</span>
+        <p>This guide explains what every metric means, how each strategy behaves, and what Amrit takes away from the results.</p>
+        <dl>
+          <div><dt id="sessionCount">...</dt><dd>sessions</dd></div>
+          <div><dt id="stockCount">...</dt><dd>stocks</dd></div>
+          <div><dt id="pairCount">...</dt><dd>ranked pairs</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <div class="tab-shell">
+      <div class="tabs" role="tablist" aria-label="Research guide sections">
+        <button id="glossaryTab" class="active" role="tab" aria-selected="true" data-tab="glossary">Glossary</button>
+        <button id="insightsTab" role="tab" aria-selected="false" data-tab="insights">Insights from Amrit</button>
+      </div>
+
+      <section id="glossaryPanel" class="panel active" role="tabpanel" aria-labelledby="glossaryTab">
+        <div class="panel-head">
+          <div><p class="eyebrow">Plain language reference</p><h2>What does that mean?</h2></div>
+          <label class="search"><span>Find a term</span><input id="glossarySearch" type="search" placeholder="Try drawdown, gap, or comparable"></label>
+        </div>
+        <div id="categoryFilters" class="category-filters" aria-label="Glossary categories"></div>
+        <p id="glossaryCount" class="result-count"></p>
+        <div id="glossaryGrid" class="glossary-grid"></div>
+      </section>
+
+      <section id="insightsPanel" class="panel" role="tabpanel" aria-labelledby="insightsTab">
+        <div class="insight-title">
+          <div class="monogram">A</div>
+          <div><p class="eyebrow">Interpretation layer</p><h2>Insights from Amrit</h2><p id="insightIntro" class="lede"></p></div>
+        </div>
+        <div id="topStrategies" class="strategy-ribbon"></div>
+        <div id="insightGrid" class="insight-grid"></div>
+
+        <section class="comparison">
+          <div class="section-number">01</div>
+          <div>
+            <p class="eyebrow">Window comparison</p>
+            <h3>One year beside ten years</h3>
+            <p>Agreement across windows is useful descriptive evidence. It is not an independent forward test because both studies were designed retrospectively and the shorter window sits inside the longer one.</p>
+          </div>
+          <div id="comparisonTable" class="comparison-table"></div>
+        </section>
+
+        <section class="decision-lens">
+          <div><p class="eyebrow">My decision lens</p><h3>Five questions before capital</h3></div>
+          <ol>
+            <li><span>01</span>Can this direction actually be traded through the broker on that day?</li>
+            <li><span>02</span>Does the pair stay positive under the 30 bps cost test?</li>
+            <li><span>03</span>Is the sample comparable, liquid, and supported by enough trades?</li>
+            <li><span>04</span>Can the planned position survive the displayed drawdown?</li>
+            <li><span>05</span>Has the rule passed paper trading without changing the entry or exit?</li>
+          </ol>
+        </section>
+
+        <aside class="warning">
+          <strong>What this research does not prove</strong>
+          <p>It does not prove future profitability, guaranteed fills, short availability, or the ability to compound at the displayed historical rate. Use the ranking to decide what deserves more testing.</p>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span>In sample research, not personalized investment advice</span>
+    <a href="index.html">Return to the atlas →</a>
+  </footer>
+  <script src="guide-data.js"></script>
+  <script src="guide-app.js"></script>
+</body>
+</html>
