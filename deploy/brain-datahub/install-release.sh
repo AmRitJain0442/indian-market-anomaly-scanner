@@ -5,10 +5,10 @@ release_id="${1:?usage: install-release.sh RELEASE_ID}"
 release_root="/srv/market-anomalies/releases/${release_id}"
 current_link="/srv/market-anomalies/current"
 
-atlas_url="https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/download/forecast-2026-08-27/NSE-anomaly-atlas-forecasts-2026-08-27.zip"
-atlas_sha="c722a84529715b71dae8dba66ee86c96083321d3fe454597fd117eefa05cf70a"
-decade_url="https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/download/forecast-2026-08-27/NSE-anomaly-decade-forecasts-2016-2026.zip"
-decade_sha="30f27d4775cdef2e44cb51389a513a79eed7e64ce12889908558a141403f14ee"
+atlas_url="https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/download/forecast-v2-2026-08-27/NSE-anomaly-atlas-forecasts-v2-2026-08-27.zip"
+atlas_sha="0bb00d1c36965140d9e0c57ee19bbbd5364071bb8a855726c37add6ecaff10b5"
+decade_url="https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/download/forecast-v2-2026-08-27/NSE-anomaly-decade-forecasts-v2-2016-2026.zip"
+decade_sha="3509737f99d941c4d03effa6027970d4c07ddec26cd5e35d09fe868f50cce75e"
 
 if [[ -e "${current_link}" && ! -L "${current_link}" ]]; then
     echo "Refusing to replace non-link path at ${current_link}" >&2
