@@ -1,0 +1,20 @@
+[Unit]
+Description=Temporary Cloudflare Quick Tunnel for the market anomaly atlas
+After=network-online.target nginx.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+RuntimeDirectory=cloudflared-quick
+Environment=HOME=/run/cloudflared-quick
+ExecStart=/usr/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:80
+Restart=always
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target
