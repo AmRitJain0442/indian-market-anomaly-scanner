@@ -8,6 +8,8 @@ The deployed URL structure mirrors the local `results` directory:
 
 - `/stock_gallery/` contains the 252-session study
 - `/ten_year/stock_gallery/` contains the 10-year study
+- `/forecasts/latest_stock_forecasts.csv` contains current 1, 3, and 5-session research forecasts
+- `/ten_year/forecasts/latest_stock_forecasts.csv` contains forecasts fitted from the longer research history
 - `/` redirects to the 252-session study
 
 The checked-in Nginx configuration is installed at `/etc/nginx/sites-available/market-anomalies` and linked from `/etc/nginx/sites-enabled/market-anomalies`.
