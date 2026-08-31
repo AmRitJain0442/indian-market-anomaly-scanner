@@ -14,4 +14,6 @@ The checked-in Nginx configuration is installed at `/etc/nginx/sites-available/m
 
 `install-release.sh` downloads both GitHub release archives, verifies their SHA-256 checksums, validates the expected entry points, installs the Nginx configuration, and changes the active release link.
 
-The current deployment is available over HTTP at the VM public IP. Add a domain name before enabling a managed TLS certificate.
+The current deployment is available at `http://34.180.21.105/`.
+
+Public HTTP access is limited to TCP port 80 by the `market-anomalies-http` firewall rule. The rule targets only instances with the `market-anomalies-web` network tag. Add a domain name before enabling a managed TLS certificate.
