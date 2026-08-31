@@ -34,6 +34,10 @@ GLOSSARY = (
     ("Money", "Basis point", "One basis point equals 0.01 percent. Ten bps per side means 0.10 percent at entry and 0.10 percent at exit."),
     ("Charts", "Equity curve", "The running value of the initial investment after each session’s strategy return and modeled costs."),
     ("Charts", "Baseline", "The gold horizontal line showing the initial investment. A curve above it is profitable at that point."),
+    ("Forecasts", "Short-horizon forecast", "A pooled model estimate of a stock's close-to-close return over the next 1, 3, or 5 consecutive NSE sessions. It is not a price target."),
+    ("Forecasts", "Prediction range", "An 80 percent empirical range calibrated from time-ordered held-out errors and scaled by each stock's recent volatility. It does not limit possible market outcomes."),
+    ("Forecasts", "Direction accuracy", "The share of held-out observations where the predicted and realized returns had the same sign. About 50 percent is coin-flip territory."),
+    ("Forecasts", "Out-of-sample R squared", "Forecast squared-error performance relative to always predicting zero return. A negative value means the model was worse than that baseline."),
     ("Risk", "Drawdown", "The percentage fall from the strategy’s previous highest equity value to a later low."),
     ("Risk", "Sharpe ratio", "Average daily net return divided by daily volatility, annualized. Higher is better, but it does not measure liquidity or execution feasibility."),
     ("Risk", "Sortino ratio", "A return to downside risk measure that focuses on negative volatility."),
@@ -100,6 +104,12 @@ def build_guide_payload(config: ResearchConfig) -> dict:
         if item is not None
     ]
     is_decade = int(metadata["evaluation_sessions"]) > 1000
+    forecast_metrics_path = config.results_dir / "forecasts" / "walk_forward_metrics.csv"
+    forecast_metrics = (
+        pd.read_csv(forecast_metrics_path).to_dict(orient="records")
+        if forecast_metrics_path.exists()
+        else []
+    )
     return {
         "window": {
             "label": "10 year" if is_decade else "252 session",
@@ -141,6 +151,12 @@ def build_guide_payload(config: ResearchConfig) -> dict:
             "trades": int(comparable_leader["number_of_trades"]),
         },
         "windows": windows,
+        "forecast": {
+            "metrics": forecast_metrics,
+            "paper": "Empirical Asset Pricing via Machine Learning",
+            "paper_url": "https://doi.org/10.1093/rfs/hhaa009",
+            "method_url": "https://github.com/AmRitJain0442/indian-market-anomaly-scanner/blob/main/FORECAST_METHOD.md",
+        },
         "glossary": [
             {"category": category, "term": term, "definition": definition}
             for category, term, definition in GLOSSARY

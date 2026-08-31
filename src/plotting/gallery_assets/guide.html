@@ -40,6 +40,7 @@
       <div class="tabs" role="tablist" aria-label="Research guide sections">
         <button id="glossaryTab" class="active" role="tab" aria-selected="true" data-tab="glossary">Glossary</button>
         <button id="insightsTab" role="tab" aria-selected="false" data-tab="insights">Insights from Amrit</button>
+        <button id="forecastTab" role="tab" aria-selected="false" data-tab="forecast">Forecast method</button>
       </div>
 
       <section id="glossaryPanel" class="panel active" role="tabpanel" aria-labelledby="glossaryTab">
@@ -50,6 +51,22 @@
         <div id="categoryFilters" class="category-filters" aria-label="Glossary categories"></div>
         <p id="glossaryCount" class="result-count"></p>
         <div id="glossaryGrid" class="glossary-grid"></div>
+      </section>
+
+      <section id="forecastPanel" class="panel" role="tabpanel" aria-labelledby="forecastTab">
+        <div class="panel-head">
+          <div><p class="eyebrow">1, 3, and 5 sessions</p><h2>Short-horizon forecast</h2></div>
+        </div>
+        <div class="insight-grid">
+          <article class="insight-card forecast-paper"><span class="number">PRIMARY PAPER</span><h3 id="forecastPaper"></h3><p>A shared cross-sectional model pools observations across stocks. This project adapts the paper to daily NSE data with a transparent ridge regression.</p></article>
+          <article class="insight-card"><span class="number">LEAKAGE CONTROL</span><h3>Train strictly before each test date</h3><p>The 60-session held-out test refits every 20 sessions. Every training outcome ends before the next test block starts.</p></article>
+          <article class="insight-card"><span class="number">INTERPRETATION</span><h3>No verified predictive edge</h3><p>Direction accuracy is close to 51 percent and out-of-sample R squared is negative. These forecasts are diagnostics, not recommendations.</p></article>
+        </div>
+        <section class="comparison">
+          <div><p class="eyebrow">Held-out evidence</p><h3>Validation by horizon</h3><p>The range target is 80 percent. Negative R squared means the model lost to a zero-return forecast on squared error.</p></div>
+          <div id="forecastMetrics" class="comparison-table"></div>
+        </section>
+        <aside class="warning"><strong>Read the complete method</strong><p>The equations, feature list, data rules, calibration method, paper links, and reproduction commands are recorded in the repository.</p><a id="forecastMethodLink" href="#">Open forecast mathematics</a></aside>
       </section>
 
       <section id="insightsPanel" class="panel" role="tabpanel" aria-labelledby="insightsTab">

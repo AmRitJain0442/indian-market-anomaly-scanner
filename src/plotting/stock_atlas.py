@@ -50,6 +50,8 @@ class AtlasDataset:
     metrics: dict[str, pd.DataFrame]
     dates: pd.DatetimeIndex
     initial_capital: float
+    forecasts: pd.DataFrame
+    forecast_metrics: dict[int, dict]
 
 
 def _font(path: str, size: int) -> ImageFont.FreeTypeFont:
@@ -173,6 +175,88 @@ def _draw_info_panel(
         y += 34
 
 
+def _draw_forecast_panel(
+    draw: ImageDraw.ImageDraw,
+    box: tuple[int, int, int, int],
+    forecast: pd.DataFrame | None,
+    metrics: dict[int, dict],
+    fonts: dict,
+) -> None:
+    left, top, right, bottom = box
+    draw.rounded_rectangle(box, radius=12, fill=PANEL_ALT, outline="#315055", width=1)
+    draw.text((left + 18, top + 16), "SHORT-HORIZON FORECAST", font=fonts["small"], fill=CYAN)
+    draw.text((right - 18, top + 18), "NOT A TARGET", font=fonts["tiny"], fill=RED, anchor="ra")
+    if forecast is None or forecast.empty:
+        draw.text(
+            ((left + right) // 2, (top + bottom) // 2 - 8),
+            "NO CURRENT FORECAST",
+            font=fonts["body"],
+            fill=MUTED,
+            anchor="mm",
+        )
+        draw.text(
+            ((left + right) // 2, (top + bottom) // 2 + 25),
+            "Needs 20 clean sessions and a current close",
+            font=fonts["tiny"],
+            fill=MUTED,
+            anchor="mm",
+        )
+        return
+
+    ordered = forecast.sort_values("horizon")
+    rows = {int(row.horizon): row for row in ordered.itertuples(index=False)}
+    if not all(horizon in rows for horizon in (1, 3, 5)):
+        return _draw_forecast_panel(draw, box, None, metrics, fonts)
+
+    chart = (left + 22, top + 58, right - 22, bottom - 82)
+    x0, y0, x1, y1 = chart
+    horizons = (0, 1, 3, 5)
+    point_values = [0.0, *(float(rows[h].predicted_return) for h in horizons[1:])]
+    lower_values = [0.0, *(float(rows[h].lower_return) for h in horizons[1:])]
+    upper_values = [0.0, *(float(rows[h].upper_return) for h in horizons[1:])]
+    low = min(lower_values)
+    high = max(upper_values)
+    padding = max((high - low) * 0.08, 0.001)
+    low -= padding
+    high += padding
+
+    def position(horizon: int, value: float) -> tuple[int, int]:
+        x = int(x0 + horizon / 5 * (x1 - x0))
+        y = int(y1 - (value - low) / (high - low) * (y1 - y0))
+        return x, y
+
+    upper_points = [position(horizon, value) for horizon, value in zip(horizons, upper_values)]
+    lower_points = [position(horizon, value) for horizon, value in zip(horizons, lower_values)]
+    draw.polygon(upper_points + list(reversed(lower_points)), fill="#203b3d")
+    zero_y = position(0, 0.0)[1]
+    draw.line((x0, zero_y, x1, zero_y), fill=GOLD, width=1)
+    point_positions = [position(horizon, value) for horizon, value in zip(horizons, point_values)]
+    draw.line(point_positions, fill=CYAN, width=3, joint="curve")
+    for horizon, (x, y) in zip(horizons, point_positions):
+        draw.ellipse((x - 4, y - 4, x + 4, y + 4), fill=CYAN)
+        draw.text(
+            (x, y1 + 8),
+            "NOW" if horizon == 0 else f"{horizon}S",
+            font=fonts["tiny"],
+            fill=MUTED,
+            anchor="ma",
+        )
+
+    summary = "  |  ".join(
+        f"{h}S {float(rows[h].predicted_return):+.1%} P(up) {float(rows[h].probability_up):.0%}"
+        for h in (1, 3, 5)
+    )
+    draw.text((left + 18, bottom - 55), summary, font=fonts["tiny"], fill=INK)
+    accuracies = [float(metrics[h]["direction_accuracy"]) for h in (1, 3, 5) if h in metrics]
+    accuracy = f"{min(accuracies):.1%} to {max(accuracies):.1%}" if accuracies else "not available"
+    draw.text(
+        (left + 18, bottom - 29),
+        f"HELD-OUT DIRECTION {accuracy}  |  NO VERIFIED EDGE",
+        font=fonts["tiny"],
+        fill=RED,
+    )
+
+
 def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
     metadata = json.loads((config.results_dir / "run_metadata.json").read_text(encoding="utf-8"))
     strategies = [entry["name"] for entry in metadata["strategies"]]
@@ -246,6 +330,15 @@ def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
                 circuit_like_sessions=int(row["circuit_like_sessions"]),
             )
         )
+    forecast_path = config.results_dir / "forecasts" / "latest_stock_forecasts.csv"
+    forecast_metrics_path = config.results_dir / "forecasts" / "walk_forward_metrics.csv"
+    forecasts = pd.read_csv(forecast_path) if forecast_path.exists() else pd.DataFrame()
+    forecast_metrics = {}
+    if forecast_metrics_path.exists():
+        forecast_metrics = {
+            int(row.horizon): row._asdict()
+            for row in pd.read_csv(forecast_metrics_path).itertuples(index=False)
+        }
     return AtlasDataset(
         strategies,
         records,
@@ -253,6 +346,8 @@ def load_atlas_dataset(config: ResearchConfig) -> AtlasDataset:
         metrics,
         dates,
         float(metadata["initial_capital"]),
+        forecasts,
+        forecast_metrics,
     )
 
 
@@ -297,27 +392,25 @@ def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path)
             dataset.initial_capital,
         )
 
-    _draw_info_panel(
+    stock_forecast = None
+    if not dataset.forecasts.empty:
+        stock_forecast = dataset.forecasts.loc[dataset.forecasts["isin"].eq(record.isin)]
+    _draw_forecast_panel(
         draw,
         boxes[13],
-        "COVERAGE + LIQUIDITY",
-        [
-            ("Sessions", f"{record.sessions_available}/{len(dataset.dates)}"),
-            ("Coverage", f"{record.coverage_ratio:.1%}"),
-            ("Liquidity flag", record.liquidity_flag),
-            ("Median value", _compact_money(record.median_daily_value).lstrip("+")),
-        ],
+        stock_forecast,
+        dataset.forecast_metrics,
         fonts,
     )
     _draw_info_panel(
         draw,
         boxes[14],
-        "EXECUTION FLAGS",
+        "COVERAGE + EXECUTION",
         [
+            ("Sessions", f"{record.sessions_available}/{len(dataset.dates)}"),
+            ("Coverage", f"{record.coverage_ratio:.1%}"),
+            ("Liquidity flag", record.liquidity_flag),
             ("Circuit-like", str(record.circuit_like_sessions)),
-            ("Discontinuities", str(record.corporate_action_observations)),
-            ("Identity", record.isin),
-            ("Universe", "ORDINARY EQUITY"),
         ],
         fonts,
     )
@@ -327,9 +420,9 @@ def render_stock_atlas(dataset: AtlasDataset, record: StockRecord, output: Path)
         "READ THIS FIRST",
         [
             ("Capital", f"INR {dataset.initial_capital:,.0f}"),
-            ("Primary rank", "NET PNL"),
-            ("Shorts", "RESEARCH ONLY"),
-            ("Status", "IN-SAMPLE"),
+            ("Identity", record.isin),
+            ("Backtests", "IN-SAMPLE"),
+            ("Forecast", "OOS CHECKED"),
         ],
         fonts,
     )
@@ -375,6 +468,9 @@ def generate_stock_gallery(
         "stock_count": len(records),
         "strategy_count": len(dataset.strategies),
         "chart_count": len(records) * len(dataset.strategies),
+        "forecast_count": int(dataset.forecasts["isin"].nunique()) if not dataset.forecasts.empty else 0,
+        "forecast_horizons": [1, 3, 5],
+        "forecast_metrics": dataset.forecast_metrics,
         "strategies": dataset.strategies,
         "stocks": [
             {

@@ -20,12 +20,16 @@
 
   function setTab(tab) {
     const insights = tab === "insights"
-    $("glossaryPanel").classList.toggle("active", !insights)
+    const forecast = tab === "forecast"
+    $("glossaryPanel").classList.toggle("active", !insights && !forecast)
     $("insightsPanel").classList.toggle("active", insights)
-    $("glossaryTab").classList.toggle("active", !insights)
+    $("forecastPanel").classList.toggle("active", forecast)
+    $("glossaryTab").classList.toggle("active", !insights && !forecast)
     $("insightsTab").classList.toggle("active", insights)
-    $("glossaryTab").setAttribute("aria-selected", String(!insights))
+    $("forecastTab").classList.toggle("active", forecast)
+    $("glossaryTab").setAttribute("aria-selected", String(!insights && !forecast))
     $("insightsTab").setAttribute("aria-selected", String(insights))
+    $("forecastTab").setAttribute("aria-selected", String(forecast))
     history.replaceState(null, "", `#${tab}`)
   }
 
@@ -139,5 +143,15 @@
 
   renderGlossary()
   renderComparison()
-  setTab(location.hash === "#insights" ? "insights" : "glossary")
+  $("forecastPaper").textContent = data.forecast.paper
+  $("forecastPaper").closest("article").addEventListener("click", () => window.open(data.forecast.paper_url, "_blank", "noopener"))
+  $("forecastMethodLink").href = data.forecast.method_url
+  $("forecastMetrics").innerHTML = data.forecast.metrics.length
+    ? [
+        '<div class="compare-row header"><strong>Horizon</strong><span>Direction</span><span>R squared | coverage</span></div>',
+        ...data.forecast.metrics.map((item) => `<div class="compare-row"><strong>${item.horizon} sessions</strong><span>${pct(item.direction_accuracy)}</span><span>${item.oos_r_squared_vs_zero.toFixed(4)} | ${pct(item.interval_coverage)}</span></div>`)
+      ].join("")
+    : "<p>Generate forecasts to populate this table.</p>"
+  const requestedTab = location.hash === "#insights" ? "insights" : location.hash === "#forecast" ? "forecast" : "glossary"
+  setTab(requestedTab)
 })()
