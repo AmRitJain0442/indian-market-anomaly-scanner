@@ -77,7 +77,7 @@ $$
 t+h<s
 $$
 
-This rule prevents future closing prices from entering the training sample. Each fit uses at most the preceding 756 sessions. Final live research forecasts are fitted only after the held-out evaluation is complete.
+This rule prevents future closing prices from entering the training sample. Each fit uses at most the preceding 756 sessions. Final live research forecasts are fitted only after the held-out evaluation is complete. For interval validation, the first 30 held-out sessions calibrate the range and the next 30 sessions measure coverage. After that coverage result is recorded, all 60 held-out sessions calibrate the range used for the current research forecast.
 
 The report includes:
 
@@ -98,7 +98,7 @@ s_{i,t,h}=\frac{\left|y_{i,t,h}-\widehat{y}_{i,t,h}\right|}
 {\max(\sigma_{i,t,20},0.002)\sqrt{h}}
 $$
 
-The value (q_{0.80,h}) is the finite-sample-adjusted 80th percentile of held-out scores. The displayed range is:
+The value (q_{0.80,h}) is the finite-sample-adjusted 80th percentile of calibration scores. The displayed range is:
 
 $$
 \left[

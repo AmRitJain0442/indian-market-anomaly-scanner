@@ -218,11 +218,22 @@ def _walk_forward(
     output = pd.concat(predictions, ignore_index=True)
     residual = output["actual_return"] - output["predicted_return"]
     scaled_error = residual.abs() / (output["forecast_scale"] * np.sqrt(horizon))
+    ordered_sessions = np.sort(output["session_number"].unique())
+    calibration_sessions = ordered_sessions[: len(ordered_sessions) // 2]
+    interval_test_sessions = ordered_sessions[len(ordered_sessions) // 2 :]
+    calibration_scores = scaled_error.loc[output["session_number"].isin(calibration_sessions)]
     quantile_level = min(
+        1.0,
+        np.ceil((len(calibration_scores) + 1) * settings.interval_coverage) / len(calibration_scores),
+    )
+    interval_multiplier = float(np.quantile(calibration_scores, quantile_level, method="higher"))
+    deployment_quantile = min(
         1.0,
         np.ceil((len(scaled_error) + 1) * settings.interval_coverage) / len(scaled_error),
     )
-    interval_multiplier = float(np.quantile(scaled_error, quantile_level, method="higher"))
+    deployment_interval_multiplier = float(
+        np.quantile(scaled_error, deployment_quantile, method="higher")
+    )
     half_width = interval_multiplier * output["forecast_scale"] * np.sqrt(horizon)
     output["lower_return"] = output["predicted_return"] - half_width
     output["upper_return"] = output["predicted_return"] + half_width
@@ -230,6 +241,8 @@ def _walk_forward(
     actual = output["actual_return"].to_numpy()
     predicted = output["predicted_return"].to_numpy()
     baseline_error = float(np.square(actual).sum())
+    interval_test = output["session_number"].isin(interval_test_sessions)
+    interval_actual = output.loc[interval_test, "actual_return"]
     metrics = {
         "horizon": horizon,
         "observations": int(len(output)),
@@ -242,11 +255,19 @@ def _walk_forward(
         "oos_r_squared_vs_zero": float(1.0 - np.square(actual - predicted).sum() / baseline_error)
         if baseline_error
         else None,
+        "interval_calibration_sessions": int(len(calibration_sessions)),
+        "interval_test_sessions": int(len(interval_test_sessions)),
         "interval_coverage": float(
-            ((actual >= output["lower_return"]) & (actual <= output["upper_return"])).mean()
+            (
+                (interval_actual >= output.loc[interval_test, "lower_return"])
+                & (interval_actual <= output.loc[interval_test, "upper_return"])
+            ).mean()
         ),
-        "mean_interval_width": float((output["upper_return"] - output["lower_return"]).mean()),
+        "mean_interval_width": float(
+            (output.loc[interval_test, "upper_return"] - output.loc[interval_test, "lower_return"]).mean()
+        ),
         "interval_multiplier": interval_multiplier,
+        "deployment_interval_multiplier": deployment_interval_multiplier,
     }
     return output, metrics
 
@@ -267,7 +288,7 @@ def fit_forecasts(
     for horizon in settings.horizons:
         evaluation, summary = _walk_forward(frame, horizon, settings)
         residual = evaluation["actual_return"] - evaluation["predicted_return"]
-        interval_multiplier = float(summary["interval_multiplier"])
+        interval_multiplier = float(summary["deployment_interval_multiplier"])
 
         valid = _valid_rows(frame, horizon)
         training = valid.loc[
