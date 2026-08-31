@@ -39,6 +39,14 @@ python run_research.py --no-download          # reuse processed data
 python run_research.py --end-date 2026-08-27 # reproduce a dated run
 ```
 
+## Short-horizon predictions
+
+The pipeline now produces pooled, leakage-safe research forecasts for the next 1, 3, and 5 consecutive NSE sessions. The implementation adapts the cross-sectional framework in Gu, Kelly, and Xiu's *Empirical Asset Pricing via Machine Learning* and validates each horizon with a time-ordered 60-session walk-forward test.
+
+The current models have not demonstrated a reliable out-of-sample edge. Direction accuracy is about 51 percent and out-of-sample (R^2) is below zero. Forecasts and calibrated ranges remain visible as diagnostics, not recommendations.
+
+Read [`FORECAST_METHOD.md`](FORECAST_METHOD.md) for the paper links, equations, predictor definitions, leakage controls, forecast-range calculation, and exact reproduction commands.
+
 ## Close-to-open strategy mathematics
 
 The close-to-open strategy isolates the return earned while the market is closed. For one stock, the strategy buys at the closing price of trading session \(t\) and sells at the opening price of the next consecutive trading session \(t+1\).
