@@ -23,6 +23,7 @@ from src.data.calendar import evaluation_window
 from src.data.nse_downloader import NSEDownloader, latest_completed_candidate
 from src.data.universe import build_security_master
 from src.features.returns import add_return_features
+from src.forecasting.short_horizon import generate_short_horizon_forecasts
 from src.plotting.research import plot_strategy_breadth, plot_strategy_suite
 from src.reporting import write_findings
 from src.strategies import default_strategies
@@ -48,6 +49,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--no-download", action="store_true", help="reuse data/processed/equity_daily.parquet")
     parser.add_argument("--skip-plots", action="store_true")
+    parser.add_argument("--skip-forecasts", action="store_true")
     parser.add_argument("--strategies", nargs="*", help="optional subset of strategy names")
     parser.add_argument("--log-level", default="INFO", choices=("DEBUG", "INFO", "WARNING", "ERROR"))
     return parser.parse_args()
@@ -139,6 +141,9 @@ def run(args: argparse.Namespace) -> Path:
     LOGGER.info("Evaluation window: %s to %s", dates.min().date(), dates.max().date())
     features = add_return_features(market)
     master = build_security_master(market, dates, config)
+    if not args.skip_forecasts:
+        LOGGER.info("Fitting leakage-safe 1, 3, and 5-session forecasts")
+        generate_short_horizon_forecasts(market, config)
     strategies = default_strategies(config)
     if args.strategies:
         requested = set(args.strategies)
