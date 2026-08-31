@@ -39,6 +39,161 @@ python run_research.py --no-download          # reuse processed data
 python run_research.py --end-date 2026-08-27 # reproduce a dated run
 ```
 
+## Close-to-open strategy mathematics
+
+The close-to-open strategy isolates the return earned while the market is closed. For one stock, the strategy buys at the closing price of trading session \(t\) and sells at the opening price of the next consecutive trading session \(t+1\).
+
+```text
+Session t close: buy
+Overnight: hold the position
+Session t+1 open: sell
+Session t+1 intraday: hold cash
+Session t+1 close: enter the next overnight trade
+```
+
+### Notation
+
+For overnight trade \(t\):
+
+- \(C_t\) is the stock's closing price on session \(t\)
+- \(O_{t+1}\) is the stock's opening price on the next consecutive session
+- \(b\) is the assumed one-way transaction cost in basis points
+- \(V_{t-1}\) is the capital available immediately before the trade
+- \(V_t\) is the capital after the trade and estimated costs
+
+One basis point is \(0.01\%\). The baseline uses \(b=10\) basis points on entry and \(b=10\) basis points on exit.
+
+### Gross return
+
+The gross overnight return is:
+
+$$
+r^{\text{gross}}_t
+= \frac{O_{t+1}}{C_t}-1
+$$
+
+An equivalent percentage form is:
+
+$$
+r^{\text{gross percentage}}_t
+= \left(\frac{O_{t+1}-C_t}{C_t}\right)\times100
+$$
+
+If the next opening price is above the previous close, the long trade makes a gross profit. If it is below the previous close, the trade makes a gross loss.
+
+### Estimated transaction costs
+
+The backtest applies the same one-way cost to both sides of every active trade. The estimated round-trip cost rate is:
+
+$$
+c = \frac{2b}{10{,}000}
+$$
+
+At the baseline value of \(b=10\):
+
+$$
+c = \frac{2\times10}{10{,}000}=0.002=0.20\%
+$$
+
+The net return used by the backtest is:
+
+$$
+r^{\text{net}}_t
+= r^{\text{gross}}_t-c
+= \left(\frac{O_{t+1}}{C_t}-1\right)-\frac{2b}{10{,}000}
+$$
+
+This is a transparent research cost approximation. It does not separately calculate brokerage, STT, exchange charges, GST, stamp duty, bid-ask spread, market impact, or opening and closing price slippage.
+
+### Full-capital reinvestment
+
+The backtest compounds the entire available capital after every valid trade:
+
+$$
+V_t = V_{t-1}\left(1+r^{\text{net}}_t\right)
+$$
+
+After \(n\) overnight trades:
+
+$$
+V_n
+= V_0\prod_{t=1}^{n}\left(1+r^{\text{net}}_t\right)
+$$
+
+Final net profit and total net return are:
+
+$$
+\text{Net PnL}=V_n-V_0
+$$
+
+$$
+\text{Total net return}=\frac{V_n}{V_0}-1
+$$
+
+Each stock and strategy combination is compounded independently. The standard research rankings use \(V_0=\text{INR }100{,}000\) for every combination. A personal allocation of INR 10,000 uses the same return percentages with \(V_0=\text{INR }10{,}000\).
+
+### INR 10,000 worked example
+
+Assume:
+
+```text
+Initial capital             INR 10,000
+Today's closing price       INR 100
+Next session opening price  INR 102
+One-way cost                10 basis points
+```
+
+The gross return is:
+
+$$
+r^{\text{gross}}
+= \frac{102}{100}-1
+= 0.02
+= 2.00\%
+$$
+
+The net return after the modelled \(0.20\%\) round-trip cost is:
+
+$$
+r^{\text{net}}
+= 2.00\%-0.20\%
+= 1.80\%
+$$
+
+The capital after the trade is:
+
+$$
+V_1
+= 10{,}000\times(1+0.018)
+= \text{INR }10{,}180
+$$
+
+Therefore:
+
+```text
+Initial investment  INR 10,000
+Gross profit        INR 200
+Estimated costs     INR 20
+Net profit          INR 180
+Ending capital      INR 10,180
+```
+
+If the next valid trade earns a net return of \(1.00\%\), the strategy reinvests INR 10,180 rather than the original INR 10,000:
+
+$$
+V_2
+= 10{,}180\times(1+0.01)
+= \text{INR }10{,}281.80
+$$
+
+### What qualifies as a valid trade
+
+The implementation records a trade only when the stock has both today's close and the next consecutive market session's open. The last observation has no known next open and is excluded. A gap in the stock's observations is not treated as an ordinary one-session overnight trade.
+
+Detected corporate-action discontinuities are also excluded from the close-to-open return. This prevents a likely split, bonus issue, or similar mechanical price change from being counted as an exploitable overnight gain or loss.
+
+The model uses the reported daily close and next open. Real orders may fill at different prices, and whole-share rounding can leave part of a small account uninvested. The reported results are historical research estimates rather than guaranteed executable returns.
+
 ## Complete stock × strategy visual atlas
 
 After a research run, generate one atlas for every stock. Each image contains all 13 strategy curves, so the current findings produce 2,652 images covering 34,476 stock-strategy graphs:
