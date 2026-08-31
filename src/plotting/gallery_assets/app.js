@@ -60,7 +60,7 @@
     $("loading").hidden = false;
     image.classList.remove("ready");
     image.onload = () => { $("loading").hidden = true; image.classList.add("ready"); };
-    image.src = stock.image;
+    image.src = `${stock.image}?v=${manifest.evaluation_end}-forecast-v1`;
     image.alt = `All 13 strategy equity curves for ${stock.symbol}`;
     history.replaceState(null, "", `#${stock.isin}`);
     [...results.children].forEach((item, itemIndex) => item.classList.toggle("active", itemIndex === current));
