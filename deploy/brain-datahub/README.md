@@ -12,4 +12,6 @@ The deployed URL structure mirrors the local `results` directory:
 
 The checked-in Nginx configuration is installed at `/etc/nginx/sites-available/market-anomalies` and linked from `/etc/nginx/sites-enabled/market-anomalies`.
 
+`install-release.sh` downloads both GitHub release archives, verifies their SHA-256 checksums, validates the expected entry points, installs the Nginx configuration, and changes the active release link.
+
 The current deployment is available over HTTP at the VM public IP. Add a domain name before enabling a managed TLS certificate.
