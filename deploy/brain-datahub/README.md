@@ -14,12 +14,10 @@ The checked-in Nginx configuration is installed at `/etc/nginx/sites-available/m
 
 `install-release.sh` downloads both GitHub release archives, verifies their SHA-256 checksums, validates the expected entry points, installs the Nginx configuration, and changes the active release link.
 
-The current deployment is available at `http://34.180.21.105/`.
-
-Public HTTP access is limited to TCP port 80 by the `market-anomalies-http` firewall rule. The rule targets only instances with the `market-anomalies-web` network tag. Add a domain name before enabling a managed TLS certificate.
-
 ## Temporary Cloudflare HTTPS
 
 `cloudflared-quick.service` exposes Nginx through a Cloudflare Quick Tunnel. This provides an automatically encrypted `trycloudflare.com` address without storing Cloudflare credentials on the VM.
+
+The current temporary address is `https://baseball-rocket-choosing-fioricet.trycloudflare.com/`. Direct public access to the VM on TCP port 80 is disabled, so external traffic must pass through Cloudflare.
 
 Quick Tunnel hostnames can change whenever the service restarts and Cloudflare does not provide a production uptime commitment for them. Replace this service with a named tunnel after selecting a hostname in a Cloudflare-managed DNS zone.
