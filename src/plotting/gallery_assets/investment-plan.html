@@ -10,7 +10,7 @@
   <div class="grain" aria-hidden="true"></div>
   <header class="topbar">
     <a href="index.html">← Stock atlas</a>
-    <nav><a href="combination-ranking.html">Stock × strategy</a><a href="strategy-ranking.html">Strategy ranking</a><a class="active" href="investment-plan.html">INR 10k plan</a></nav>
+    <nav><a href="combination-ranking.html">Stock × strategy</a><a href="strategy-ranking.html">Strategy ranking</a><a href="guide.html#glossary">Glossary</a><a class="active" href="investment-plan.html">INR 10k plan</a></nav>
   </header>
 
   <main>
@@ -22,21 +22,21 @@
       <aside>
         <p class="signal">BEST DEFENSIBLE PLAN</p>
         <p>Prove the fill mechanics first. Deploy half-size second. Earn the right to use the full pilot only after costs, slippage, and drawdown pass fixed gates.</p>
-        <small>IN-SAMPLE FINDINGS THROUGH <b id="evaluationEnd">—</b> · NOT A RETURN FORECAST</small>
+        <small>IN-SAMPLE FINDINGS THROUGH <b id="evaluationEnd">...</b> · NOT A RETURN FORECAST</small>
         <a class="log-download" href="pilot_trade_log_template.csv" download>Download paper-trade log →</a>
       </aside>
     </section>
 
     <section class="capital-grid">
-      <article><span>01 / CAPITAL</span><strong id="capital">—</strong><p>Total pilot account</p></article>
-      <article><span>02 / STARTING EXPOSURE</span><strong id="maxPosition">—</strong><p>50% of current closing equity</p></article>
-      <article><span>03 / STARTING RISK</span><strong id="tradeRisk">—</strong><p>0.5% of current equity at full pilot</p></article>
-      <article><span>04 / KILL SWITCH</span><strong id="drawdownLimit">—</strong><p>5% below the account high-water mark</p></article>
+      <article><span>01 / CAPITAL</span><strong id="capital">...</strong><p>Total pilot account</p></article>
+      <article><span>02 / STARTING EXPOSURE</span><strong id="maxPosition">...</strong><p>50% of current closing equity</p></article>
+      <article><span>03 / STARTING RISK</span><strong id="tradeRisk">...</strong><p>0.5% of current equity at full pilot</p></article>
+      <article><span>04 / KILL SWITCH</span><strong id="drawdownLimit">...</strong><p>5% below the account high-water mark</p></article>
     </section>
 
     <section class="compound-note">
       <p class="eyebrow">Reinvestment rule</p>
-      <p><strong>Yesterday’s closing equity becomes today’s sizing base.</strong> Gains increase—and losses reduce—the next position automatically. We reinvest the account, but never expose the whole account: half-size uses 25% notional / 0.25% risk; full pilot uses 50% / 0.5%.</p>
+      <p><strong>Yesterday’s closing equity becomes today’s sizing base.</strong> Gains increase the next position automatically. Losses reduce it. We reinvest the account, but never expose the whole account. Half-size uses 25% notional and 0.25% risk. Full pilot uses 50% notional and 0.5% risk.</p>
     </section>
 
     <section class="section stages">
@@ -44,7 +44,7 @@
       <div class="stage-track">
         <article><b>01</b><div><span>PAPER</span><h3>20 sessions + 10 signals</h3><p>No capital at risk. Extend until both are satisfied. Pass only with positive net PnL, ≤10 bps average slippage, and drawdown below INR 300.</p></div></article>
         <article><b>02</b><div><span>HALF SIZE</span><h3>10 valid trades</h3><p>Maximum INR 2,500 position and INR 25 risk. Pass only with positive net PnL and ≤10 bps average slippage.</p></div></article>
-        <article><b>03</b><div><span>FULL PILOT</span><h3>50% of equity</h3><p>One trade at a time. Risk 0.5% of updated equity; pause at 5% below the account high-water mark.</p></div></article>
+        <article><b>03</b><div><span>FULL PILOT</span><h3>50% of equity</h3><p>One trade at a time. Risk 0.5% of updated equity. Pause at 5% below the account high-water mark.</p></div></article>
       </div>
     </section>
 
@@ -79,7 +79,7 @@
     </section>
 
     <section class="section">
-      <header><p class="eyebrow">Strict execution shortlist</p><h2>Five names to watch—not buy and hold</h2></header>
+      <header><p class="eyebrow">Strict execution shortlist</p><h2>Five names to watch, not buy and hold</h2></header>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Priority</th><th>Stock</th><th>Pair score</th><th>Pair rank</th><th>Scaled historical PnL</th><th>Historical ending</th><th>30 bps PnL</th><th>Long leg</th><th>Short leg</th><th>Atlas</th></tr></thead>
@@ -100,12 +100,12 @@
         <label>Entry price<input id="entryPrice" type="number" min="0.01" step="0.05" value="200"></label>
         <label>Live stage<select id="liveStage"><option value="half">Half-size validation</option><option value="full">Full pilot</option></select></label>
         <dl>
-          <div><dt>Quantity</dt><dd id="quantity">—</dd></div>
-          <div><dt>Notional</dt><dd id="notional">—</dd></div>
-          <div><dt>Planned risk</dt><dd id="plannedRisk">—</dd></div>
-          <div><dt>Cash remaining</dt><dd id="cashRemaining">—</dd></div>
-          <div><dt>Daily loss ceiling</dt><dd id="dynamicDailyStop">—</dd></div>
-          <div><dt>5% pause distance</dt><dd id="dynamicPause">—</dd></div>
+          <div><dt>Quantity</dt><dd id="quantity">...</dd></div>
+          <div><dt>Notional</dt><dd id="notional">...</dd></div>
+          <div><dt>Planned risk</dt><dd id="plannedRisk">...</dd></div>
+          <div><dt>Cash remaining</dt><dd id="cashRemaining">...</dd></div>
+          <div><dt>Daily loss ceiling</dt><dd id="dynamicDailyStop">...</dd></div>
+          <div><dt>5% pause distance</dt><dd id="dynamicPause">...</dd></div>
         </dl>
       </form>
     </section>
@@ -120,7 +120,7 @@
   </main>
 
   <footer>
-    <p>Research-derived pilot protocol—not personalized investment advice or an assurance of returns.</p>
+    <p>Research-derived pilot protocol. Not personalized investment advice or an assurance of returns.</p>
     <p><a href="https://www.sebi.gov.in/media-and-notifications/press-releases/jul-2024/sebi-study-finds-that-7-out-of-10-individual-intraday-traders-in-equity-cash-segment-make-losses_84948.html">SEBI intraday study ↗</a> · <a href="https://nsearchives.nseindia.com/content/circulars/CMTR71775.pdf">NSE 2026 calendar ↗</a> · <a href="https://www.nseindia.com/static/market-data/market-timings">NSE timings ↗</a></p>
   </footer>
   <script src="investment-plan-data.js"></script>

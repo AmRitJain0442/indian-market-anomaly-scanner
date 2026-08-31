@@ -55,7 +55,7 @@ h1 em { color: var(--gold); font-weight: 400; }
 .counter strong { color: var(--green); font: 500 30px "DM Mono"; }
 .counter span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
 .header-tools { display: flex; align-items: center; gap: 28px; }
-.ranking-nav { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+.ranking-nav { display: grid; grid-template-columns: repeat(2, max-content); align-items: end; gap: 7px 16px; }
 .ranking-link {
   color: var(--gold); border-bottom: 1px solid var(--gold); padding: 7px 0;
   text-decoration: none; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;

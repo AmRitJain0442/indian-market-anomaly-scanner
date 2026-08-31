@@ -47,7 +47,9 @@ After a research run, generate one atlas for every stock. Each image contains al
 python generate_stock_gallery.py
 ```
 
-Open `results/stock_gallery/index.html` for the searchable gallery. Search by symbol, company, or ISIN; filter for liquid or ≥95%-coverage securities; navigate with the arrow keys; and download any full-resolution WebP. The complete generated snapshot is also published in the [atlas-2026-08-27 GitHub release](https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/tag/atlas-2026-08-27).
+Open `results/stock_gallery/index.html` for the searchable gallery. Search by symbol, company, or ISIN. Filter for liquid or ≥95%-coverage securities. Navigate with the arrow keys and download any full-resolution WebP. The complete generated snapshot is also published in the [atlas-2026-08-27 GitHub release](https://github.com/AmRitJain0442/indian-market-anomaly-scanner/releases/tag/atlas-2026-08-27).
+
+Both the 252-session and 10-year galleries include a **Glossary** tab and an **Insights from Amrit** tab. The guide defines strategies, money fields, chart elements, risk statistics, evidence labels, and data-quality flags in plain language. It also compares the leading strategies across both windows and provides a five-question decision lens before capital is considered.
 
 Generate the market-wide collective strategy leaderboard with:
 
