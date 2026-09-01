@@ -10,6 +10,9 @@ The deployed URL structure mirrors the local `results` directory:
 - `/ten_year/stock_gallery/` contains the 10-year study
 - `/forecasts/latest_stock_forecasts.csv` contains current 1, 3, and 5-session research forecasts
 - `/ten_year/forecasts/latest_stock_forecasts.csv` contains forecasts fitted from the longer research history
+- `/ather-intelligence/` serves the independently refreshed Ather market-intelligence dashboard
+
+The Ather route is part of this Nginx configuration so deploying a new anomaly-atlas release does not remove the dashboard. Its static application and generated JSON remain under `/var/www/ather-market-intelligence` and are managed by the separate Ather service.
 - `/` redirects to the 252-session study
 
 The checked-in Nginx configuration is installed at `/etc/nginx/sites-available/market-anomalies` and linked from `/etc/nginx/sites-enabled/market-anomalies`.
