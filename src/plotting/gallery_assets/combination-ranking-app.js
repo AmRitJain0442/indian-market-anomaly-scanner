@@ -18,6 +18,9 @@
   $("heroInvestment").textContent = plainMoney(dataset.initial_capital);
   $("tapeSummary").textContent = `${dataset.count.toLocaleString()} PAIRS / ${dataset.stock_count.toLocaleString()} STOCKS / ${dataset.strategy_count} STRATEGIES / ${dataset.session_count.toLocaleString()} SESSIONS`;
   if (dataset.session_count > 1000) $("planLink").href = "../../stock_gallery/investment-plan.html";
+  if ($("eligibilityLink")) $("eligibilityLink").href = dataset.session_count > 1000
+    ? "../../findings/2026-09-05-eligibility-ranking/ten_year/index.html"
+    : "../findings/2026-09-05-eligibility-ranking/one_year/index.html";
   [...new Set(rows.map((row) => row.st))].sort().forEach((strategy) => {
     const option = document.createElement("option");
     option.value = strategy;

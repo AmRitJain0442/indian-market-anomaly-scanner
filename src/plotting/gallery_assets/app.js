@@ -22,6 +22,9 @@
     ? "../../stock_gallery/index.html"
     : "../ten_year/stock_gallery/index.html";
   if (isDecade) $("planLink").href = "../../stock_gallery/investment-plan.html";
+  if ($("eligibilityLink")) $("eligibilityLink").href = isDecade
+    ? "../../findings/2026-09-05-eligibility-ranking/ten_year/index.html"
+    : "../findings/2026-09-05-eligibility-ranking/one_year/index.html";
   $("methodLine").textContent = `${manifest.strategy_count} strategies · INR ${initialCapital.toLocaleString("en-IN")} initial capital · 10 bps per side`;
 
   function matchesFilter(stock) {
