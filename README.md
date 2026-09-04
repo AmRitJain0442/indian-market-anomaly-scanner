@@ -4,6 +4,10 @@ A reproducible, exchange-wide scanner for daily anomalies in NSE cash equities. 
 
 The source brief is preserved in [`indian_market_anomaly_scanner_252d.md`](indian_market_anomaly_scanner_252d.md).
 
+## EQ-only ranking for the INR 1,000 research budget
+
+The [new screened rankings](results/findings/2026-09-05-eligibility-ranking/README.md) exclude both BE and BZ, check every historical entry and exit series, and separate current broker-list membership from profitability. The practical view adds a INR 500 unleveraged cash cap, a INR 5 illustrative planned-risk limit, liquidity and sample checks. It contains **667 pairs across 66 stocks** for one year and **497 pairs across 44 stocks** for ten years. The searchable pages include individual exclusion reasons and retain the existing color theme. Historical profit figures still refer to the original INR 100,000 theoretical account, not a validated INR 1,000 strategy.
+
 ## Execution review, 5 September 2026
 
 The [SITINET execution review and INR 1,000 paper strategy](results/findings/2026-09-05-execution-review/README.md) identifies a critical limitation in the historical rankings. All 174 SITINET gap-fade trades occurred in BZ, where intraday trading is prohibited. VHLTD has the same problem in BE, and some stocks changed series during the study. Assumed opening and closing fills, full-capital compounding, and retrospective selection introduce further limitations. The review includes reproducible trade evidence and a proposed 30-session paper experiment. The original strategy engine and historical outputs have not yet been corrected.
