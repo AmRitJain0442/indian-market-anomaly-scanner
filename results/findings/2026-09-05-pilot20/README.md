@@ -54,7 +54,7 @@ The broker historical-candle APIs also describe OHLCV records, not this missing 
 
 A separate approximation can use the completed 09:15 minute for a decision at 09:16, then the 09:17 bar's open with fixed adverse slippage. It must use whole shares, estimated costs, the INR 500 initial notional cap and INR 5 initial planned-risk cap. Stops and targets must be handled conservatively when both occur inside one bar.
 
-This changes the timing and cannot test the original spread, depth or five-second fill requirements. It must be labeled an approximation, not the exact strategy. The user was asked whether to run this alternative. The current audit artifacts contain no approximate trade results.
+This changes the timing and cannot test the original spread, depth or five-second fill requirements. It must be labeled an approximation, not the exact strategy. The user subsequently approved the alternative, and its [separate completed results](../2026-09-05-pilot20-minute/README.md) are now available. The audit artifacts in this directory remain unchanged and contain no approximate trade results.
 
 Any retrospective result here also overlaps data already inspected in the larger research project. It would be a diagnostic, not independent forward validation or evidence of reliable next-month profit.
 
