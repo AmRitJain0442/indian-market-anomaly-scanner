@@ -1,0 +1,104 @@
+{
+  "review_date": "2026-09-05",
+  "historical_evaluation_start": "2025-08-20",
+  "historical_evaluation_end": "2026-08-27",
+  "initial_investment": 1000.0,
+  "research_initial_capital": 100000.0,
+  "limitations": [
+    "Historical price diagnostics are not executable returns or predictions.",
+    "EQ-only filtering checks session series, not historical broker permission.",
+    "Tick stresses are hypothetical adverse fills, not measured spreads.",
+    "Last-price substitution is not a timed, executable exit.",
+    "Liquidity ratios use realized daily totals for audit only, not trading signals.",
+    "The September 4 snapshot does not update the historical backtest."
+  ],
+  "sitinet_price_diagnostics": {
+    "original_ideal_open_and_close": {
+      "initial_investment": 1000.0,
+      "ending_value": 50949.40387616356,
+      "profit": 49949.40387616356,
+      "max_drawdown": -0.017856669988026486,
+      "trades": 174
+    },
+    "one_paise_adverse_entry": {
+      "initial_investment": 1000.0,
+      "ending_value": 491.89278134794415,
+      "profit": -508.10721865205585,
+      "max_drawdown": -0.5646184171298432,
+      "trades": 174
+    },
+    "one_paise_adverse_entry_and_exit": {
+      "initial_investment": 1000.0,
+      "ending_value": 3.8097691166227916,
+      "profit": -996.1902308833772,
+      "max_drawdown": -0.9961902308833772,
+      "trades": 174
+    },
+    "last_price_instead_of_close": {
+      "initial_investment": 1000.0,
+      "ending_value": 12095.812243547614,
+      "profit": 11095.812243547614,
+      "max_drawdown": -0.021781314734754753,
+      "trades": 174
+    }
+  },
+  "sitinet": {
+    "observed_series": [
+      "BZ"
+    ],
+    "trades": 174,
+    "short_trades": 139,
+    "long_trades": 35,
+    "series_eligible_intraday_trades": 0,
+    "median_entry": 0.365,
+    "minimum_entry": 0.28,
+    "maximum_entry": 0.52,
+    "one_paise_entry_fraction_median": 0.027402402402402402,
+    "trades_close_differs_from_last": 89,
+    "scaled_notional_over_full_daily_value_count": 0,
+    "scaled_notional_div_daily_value_median": 0.03086547216428883,
+    "scaled_notional_div_daily_value_max": 0.8537195498606663,
+    "last_trade": {
+      "date": "2026-08-27",
+      "entry": 0.28,
+      "close": 0.27,
+      "last_price": 0.28,
+      "research_capital_before": 4928770.413669774,
+      "scaled_capital_before": 49287.70413669774,
+      "whole_day_traded_value": 270266.21
+    }
+  },
+  "leaderboard_latest_series_only": {
+    "top20_BE_or_BZ_rows": 12,
+    "top100_BE_or_BZ_rows": 42,
+    "top500_BE_or_BZ_rows": 153
+  },
+  "initial_loss_drawdown_diagnostic": {
+    "returns": [
+      -0.1,
+      0.02,
+      0.01
+    ],
+    "existing_metrics_drawdown": 0.0,
+    "drawdown_including_initial_capital": -0.09999999999999998
+  },
+  "latest_source": {
+    "url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20260904_F_0000.csv.zip",
+    "sha256": "ecda2bca1411bcae37c112fdbb781dee5c7b5e8b4442cff5b329a1a9b6ecc2fe",
+    "date": "2026-09-04"
+  },
+  "input_sha256": {
+    "data\\processed\\equity_daily.parquet": "09d77e865a4ac8f59d6d4acd44472b2c31c160972b7686772f64cd7a780e986f",
+    "results\\strategy_results\\all_stock_strategy_results.csv": "0fc6437efd7a4337a6b2252e5b2ce092ded2e42cfae6cbc500d8eeb41dfaedd0",
+    "results\\run_metadata.json": "a113b39cf70e9ef5e6f0043f796b90385ff98fc0131beac184e43223e2f1a267",
+    "src\\strategies\\daily.py": "302083df708f4dff8a501e4025738b53be7a2e857a24146effa12c55b2956c43",
+    "src\\strategies\\base.py": "f6ae4685cff62ebb7c9a4819d0dab34fdae2a692f8ed5706caa52ddadb382989",
+    "src\\features\\returns.py": "266eb91ebfea080b0ac1a191161bf84f076827f00c436353f0c3330bfd143b7b",
+    "src\\backtest\\engine.py": "2d15f03d79a24a2d48422e2c5e2552397e1199d4cf8d86fd95e8d43aa8c590fe",
+    "src\\backtest\\metrics.py": "e94f71c7358be58033c7227665f37cc5ddc62169e14703a0cf036305ce596f97",
+    "src\\backtest\\combination_ranking.py": "d9d8fb40a556ce124ca2d4fc247f8d24afdc40b75227f68fc4bc7188b6dce8df",
+    "results\\trades\\gap_fade_050.parquet": "6b13db98fd919c8d12fa6f9d2722e8818d6319319015cce105a0f5f560887c37",
+    "results\\trades\\gap_fade_100.parquet": "60a414d754d5f02ca1c732e5c298c6db6eebe5dc02ecfc0abfa9e8846f6b60dc",
+    "results\\findings\\2026-08-27\\top500_stock_strategy_combinations.csv": "6badf1cd7497b72cdb061c362c8157ccd45b0cabd1280211816cf1016684d772"
+  }
+}
