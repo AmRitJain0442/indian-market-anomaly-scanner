@@ -8,6 +8,8 @@ The source brief is preserved in [`indian_market_anomaly_scanner_252d.md`](india
 
 The [SITINET execution review and INR 1,000 paper strategy](results/findings/2026-09-05-execution-review/README.md) identifies a critical limitation in the historical rankings. All 174 SITINET gap-fade trades occurred in BZ, where intraday trading is prohibited. VHLTD has the same problem in BE, and some stocks changed series during the study. Assumed opening and closing fills, full-capital compounding, and retrospective selection introduce further limitations. The review includes reproducible trade evidence and a proposed 30-session paper experiment. The original strategy engine and historical outputs have not yet been corrected.
 
+The [local 20-session data audit](results/findings/2026-09-05-pilot20/README.md) covers 10 August through 4 September 2026. It finds eight opening-gap candidates and available minute candles, but not the historical quotes and permissions needed to establish the exact strategy's profit. A separately labeled minute approximation is prepared but has not been run.
+
 ## Latest executed findings
 
 The committed full-market snapshot through 27 August 2026 is in [`results/findings/2026-08-27/`](results/findings/2026-08-27/README.md). It covers 2,652 historical ordinary equities over 252 completed sessions after a 550-session data build. The snapshot includes the strategy overview, raw and liquid/comparable leaders, bottom rankings, cost sensitivity, and selected figures.
