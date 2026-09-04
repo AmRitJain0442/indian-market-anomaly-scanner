@@ -4,6 +4,10 @@ A reproducible, exchange-wide scanner for daily anomalies in NSE cash equities. 
 
 The source brief is preserved in [`indian_market_anomaly_scanner_252d.md`](indian_market_anomaly_scanner_252d.md).
 
+## Execution review, 5 September 2026
+
+The [SITINET execution review and INR 1,000 paper strategy](results/findings/2026-09-05-execution-review/README.md) identifies a critical limitation in the historical rankings. All 174 SITINET gap-fade trades occurred in BZ, where intraday trading is prohibited. VHLTD has the same problem in BE, and some stocks changed series during the study. Assumed opening and closing fills, full-capital compounding, and retrospective selection introduce further limitations. The review includes reproducible trade evidence and a proposed 30-session paper experiment. The original strategy engine and historical outputs have not yet been corrected.
+
 ## Latest executed findings
 
 The committed full-market snapshot through 27 August 2026 is in [`results/findings/2026-08-27/`](results/findings/2026-08-27/README.md). It covers 2,652 historical ordinary equities over 252 completed sessions after a 550-session data build. The snapshot includes the strategy overview, raw and liquid/comparable leaders, bottom rankings, cost sensitivity, and selected figures.
