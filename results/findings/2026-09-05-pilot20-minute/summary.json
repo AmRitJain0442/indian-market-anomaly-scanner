@@ -1,0 +1,46 @@
+{
+  "mode": "minute-proxy",
+  "start": "2026-08-10",
+  "end": "2026-09-04",
+  "evaluation_sessions": 20,
+  "warmup_sessions": 20,
+  "initial_investment": 1000.0,
+  "real_money_deployed": 0,
+  "exact_strategy_validated": false,
+  "gap_candidates": 8,
+  "gap_signal_days": 8,
+  "download_errors": {},
+  "limitations": [
+    "One-minute candles cannot test bid/ask spreads, depth, or one-second execution.",
+    "Historical broker permissions and corporate-action notices are unverified.",
+    "Historical EQ series is checked but does not prove broker permission.",
+    "Past data overlaps the already inspected study, so this is not independent validation.",
+    "Fixed platform, data, and account charges are excluded from trade PnL."
+  ],
+  "code_sha256": {
+    "run_intraday_pilot.py": "84230bdc031b93f02b568ac401591786d684dc2e8af2d6cd4048f5ee0df439dd",
+    "src\\data\\pilot_history.py": "0a2a76d02a8fe9a3bb8fc976bc6bab539212a03600a6c07c957c0edfac8f9850",
+    "src\\backtest\\intraday_pilot.py": "9793ca93ff104ef0176fcc16bc9bcbb83cc370f96abce7b3428f3ebe1ab4935c"
+  },
+  "config": {
+    "notional_fraction": 0.5,
+    "planned_risk_fraction": 0.005,
+    "stop_fraction": 0.01,
+    "minimum_gap": 0.01,
+    "minimum_target_distance": 0.0075,
+    "entry_limit_fraction": 0.0005,
+    "slippage_bps": 5.0,
+    "allowance_fraction": 0.002,
+    "maximum_drawdown": 0.05
+  },
+  "ending_equity": 992.9,
+  "net_pnl": -7.100000000000023,
+  "incomplete": false,
+  "halted": false,
+  "closed_trades": 2,
+  "status_counts": {
+    "NO_TRADE": 13,
+    "NO_FILL": 5,
+    "CLOSED": 2
+  }
+}

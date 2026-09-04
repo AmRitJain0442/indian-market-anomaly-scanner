@@ -1,0 +1,17 @@
+{
+  "initial_investment": 1000.0,
+  "ending_equity": 992.9,
+  "net_pnl": -7.100000000000023,
+  "return_fraction": -0.007099999999999995,
+  "evaluation_sessions": 20,
+  "closed_trades": 2,
+  "winning_trades": 0,
+  "losing_trades": 2,
+  "gross_pnl": -6.3700000000000045,
+  "estimated_trading_charges": 0.73,
+  "max_realized_drawdown": -0.007099999999999995,
+  "no_fill_sessions": 5,
+  "no_trade_sessions": 13,
+  "fixed_platform_costs_included": false,
+  "exact_quote_strategy_validated": false
+}
