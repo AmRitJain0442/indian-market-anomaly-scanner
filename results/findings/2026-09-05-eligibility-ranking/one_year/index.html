@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EQ-only stock and strategy ranking</title>
+  <link rel="stylesheet" href="eligibility-ranking.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="Research navigation"><a id="atlasLink" href="../../../stock_gallery/index.html">Stock atlas</a><a href="README.md">Method and findings</a><a href="../one_year/index.html" id="oneYearLink">1 year</a><a href="../ten_year/index.html" id="tenYearLink">10 years</a></nav>
+    <h1>EQ-only stock and strategy ranking</h1>
+    <p id="windowInfo">Loading dated research screen...</p>
+  </header>
+  <main>
+    <section class="notice" aria-label="Important limitation">
+      <strong>Research shortlist, not trade approval.</strong>
+      <p>Both BE and BZ are excluded. Every historical trade must have EQ on entry and exit. Broker-list membership is a dated check, not account-specific permission. Historical profits retain the original research assumptions.</p>
+    </section>
+    <dl class="summary">
+      <div><dt>Your budget</dt><dd id="budget">INR 1,000</dd></div>
+      <div><dt>Unleveraged position cap</dt><dd id="cap">INR 500</dd><small id="riskLimit">Planned-risk illustration: INR 5</small></div>
+      <div><dt>Strict EQ-only pairs</dt><dd id="eqCount">...</dd></div>
+      <div><dt>Practical pairs / stocks</dt><dd id="practicalCount">...</dd></div>
+    </dl>
+    <div class="views" role="group" aria-label="Ranking view">
+      <button data-view="practical" aria-pressed="true">INR 1,000 research shortlist</button>
+      <button data-view="eq" aria-pressed="false">All EQ-only pairs</button>
+      <button data-view="excluded" aria-pressed="false">Excluded pairs</button>
+      <button data-view="all" aria-pressed="false">All audited pairs</button>
+    </div>
+    <p id="viewDescription" class="view-description"></p>
+    <section class="filters" aria-label="Search and filters">
+      <label>Stock, company or ISIN<input id="search" type="search" placeholder="For example AMDIND or POWERGRID" autocomplete="off"></label>
+      <label>Strategy<select id="strategy"><option value="all">All strategies</option></select></label>
+      <label>Broker snapshot<select id="broker"><option value="all">Any status</option><option value="listed">Listed in Zerodha MIS table</option><option value="not-listed">Not listed</option></select></label>
+      <label>Sort by<select id="sort"><option value="rank">Research rank</option><option value="price">Snapshot price</option><option value="liquidity">Recent liquidity</option><option value="return">Historical return</option></select></label>
+    </section>
+    <p class="reference-note" id="referenceNote"></p>
+    <div class="table-meta"><p id="matches" aria-live="polite"></p><div><a href="practical_shortlist.csv" download>Shortlist CSV</a><a href="eq_only_ranking.csv" download>EQ-only CSV</a><a href="all_pairs_audit.csv.gz" download>Full audit CSV.gz</a></div></div>
+    <div class="table-wrap" tabindex="0" aria-label="Scrollable ranking table">
+      <table>
+        <thead><tr><th id="rankHeading">Practical rank</th><th>Stock + strategy</th><th>Snapshot price</th><th>Shares illustration</th><th>Broker list</th><th>Research score</th><th>Historical return</th><th>Trades</th><th>Checks</th></tr></thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" hidden><p>No matches in this view.</p><button id="searchAll">Search all audited pairs</button></div>
+    <div class="pagination"><button id="previous">Previous</button><span id="pageLabel"></span><button id="next">Next</button></div>
+    <details class="method"><summary>Screening rules and how to use this list</summary>
+      <ol>
+        <li>Use this list to select a stock-strategy pair for further testing, not as a buy or sell signal.</li>
+        <li>The practical view requires current EQ, zero non-EQ historical trade legs, a dated Zerodha MIS listing, price at least INR 100 and one whole share within the cash cap and the illustrative planned-risk limit.</li>
+        <li>It also requires 20 recent sessions with median daily turnover at least INR 50 crore, 95% historical coverage and at least 20 historical trades. Overnight strategies need a separate delivery review.</li>
+        <li>The INR 100 floor and liquidity limit are conservative pilot choices, not exchange prohibitions. Use the other views to inspect excluded stocks and their reasons.</li>
+        <li>Risk shares use a tick-rounded 1% stop, estimated charges and a 0.20% adverse-fill allowance with a two-tick minimum per share. The worse of long and short planned loss must fit INR 5. This is a sizing illustration, not a newly backtested stop rule or a guaranteed loss cap.</li>
+        <li>Neither share count is an order quantity. Check current quotes, charges, stop distance and your risk budget before sizing. No leverage is assumed even when the broker offers it.</li>
+        <li>Historical figures come from a different, theoretical reference account. Initial-capital drawdown is corrected, but exact opening fills, retrospective exclusions and selection bias remain unresolved.</li>
+        <li>Recheck exchange and broker permissions each session. This page does not connect to Zerodha or Dhan and does not place orders.</li>
+      </ol>
+      <p><a href="https://zerodha.com/margin-calculator/Equity/" target="_blank" rel="noopener noreferrer">Check Zerodha's current list</a> <a href="https://support.zerodha.com/category/trading-and-markets/charts-and-orders/order/articles/intraday-orders-not-allowed-for-some-stocks" target="_blank" rel="noopener noreferrer">Other broker restrictions</a></p>
+    </details>
+  </main>
+  <footer id="footer">Source dates and original account size are shown above. No live strategy has been validated by this screen.</footer>
+  <script src="eligibility-data.js"></script>
+  <script src="eligibility-ranking.js"></script>
+</body>
+</html>
